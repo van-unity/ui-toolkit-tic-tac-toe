@@ -77,17 +77,17 @@ namespace TicTacToe.Editor {
 
         private void DrawBoardLines() {
             for (int columnIndex = 1; columnIndex < Columns; columnIndex++) {
-                var from = BoardUtils.IndexToPixelPos(new Vector2(0.1f, columnIndex), CellWidth, CellHeight);
-                var to = BoardUtils.IndexToPixelPos(new Vector2(Rows - .1f, columnIndex), CellWidth, CellHeight);
-                var line = LineDrawer.DrawLine(from, to, 0, EasingMode.EaseInOutSine);
+                var from = LogicToPixelPos(new Vector2(0.1f, columnIndex));
+                var to = LogicToPixelPos(new Vector2(Rows - .1f, columnIndex));
+                var line = new AnimatedLine(from, to);
                 line.AddToClassList("board-line");
                 _linesContainer.Add(line);
             }
 
             for (int rowIndex = 1; rowIndex < Rows; rowIndex++) {
-                var from = BoardUtils.IndexToPixelPos(new Vector2(rowIndex, .1f), CellWidth, CellHeight);
-                var to = BoardUtils.IndexToPixelPos(new Vector2(rowIndex, Columns - .1f), CellWidth, CellHeight);
-                var line = LineDrawer.DrawLine(from, to, 0, EasingMode.EaseInOutSine);
+                var from = LogicToPixelPos(new Vector2(rowIndex, .1f));
+                var to = LogicToPixelPos(new Vector2(rowIndex, Columns - .1f));
+                var line = new AnimatedLine(from, to);
                 line.AddToClassList("board-line");
                 _linesContainer.Add(line);
             }
@@ -100,7 +100,7 @@ namespace TicTacToe.Editor {
             to.y += .5f;
             var fromPixel = LogicToPixelPos(from);
             var toPixel = LogicToPixelPos(to);
-            var line = LineDrawer.DrawLine(fromPixel, toPixel, 0, EasingMode.EaseInOutSine);
+            var line = new AnimatedLine(fromPixel, toPixel);
             line.AddToClassList("winning-line");
             _linesContainer.Add(line);
         }

@@ -13,21 +13,18 @@ using Random = UnityEngine.Random;
 
 namespace TicTacToe.Editor {
     public class TicTacToeWindow : UnityEditor.EditorWindow {
-        private int[,] _matrix = new int[3, 3] {
+        private readonly int[,] _matrix = new int[3, 3] {
             { 0, 0, 0, },
             { 0, 0, 0, },
             { 0, 0, 0, },
         };
 
-        private Dictionary<Vector2Int, VisualElement> _buttonsLookup;
-
-        private VisualElement _board;
         private CancellationTokenSource _cancelOnDestroy;
         private TicTacToeSettings _settings;
         private Game _game;
+        private Board _board;
 
-
-        [UnityEditor.MenuItem("TicTacToe/Play")]
+        [MenuItem("TicTacToe/Play")]
         private static void ShowWindow() {
             var window = GetWindow<TicTacToeWindow>();
             window.titleContent = new GUIContent("TicTacToe-UiToolkit");
@@ -35,8 +32,11 @@ namespace TicTacToe.Editor {
         }
 
         private void OnEnable() {
-            _buttonsLookup = new Dictionary<Vector2Int, VisualElement>();
             _cancelOnDestroy = new CancellationTokenSource();
+            _board = new Board((int[,])_matrix.Clone());
+            var playerX = new ManualPlayer(_board, PlayerSymbol.X);
+            var playerO = new AutomatedPlayer(_board, PlayerSymbol.O);
+            _game = new Game(playerX, playerO, _board);
         }
 
         private void OnDisable() {
@@ -44,34 +44,15 @@ namespace TicTacToe.Editor {
             _game.Dispose();
         }
 
-        private FloatField _lineDurationField;
-        private EnumField _easingField;
-
         private void CreateGUI() {
-            _lineDurationField = new FloatField("LineDurationInSeconds: ") { value = .25f };
-            _easingField = new EnumField("LineEasing: ", EasingMode.Linear);
-            rootVisualElement.Add(_lineDurationField);
-            rootVisualElement.Add(_easingField);
-            var reloadButton = new Button(() => {
-                _matrix = new int[3, 3] {
-                    { 0, 0, 0, },
-                    { 0, 0, 0, },
-                    { 0, 0, 0, },
-                };
+            var restartButton = new Button(() => {
                 rootVisualElement.Clear();
                 CreateGUI();
-            }) { text = "Reload" };
-            rootVisualElement.Add(reloadButton);
+            }) { text = "Restart Game" };
 
-            var board = new Board(_matrix);
-            rootVisualElement.Add(board);
-            var playerX = new ManualPlayer(board, PlayerSymbol.X);
-            var playerO = new AutomatedPlayer(board, PlayerSymbol.O);
-            _game = new Game(playerX, playerO, board);
-
-            rootVisualElement.schedule.Execute(() => {
-                _game.Run();
-            }).ExecuteLater(1000);
+            rootVisualElement.Add(restartButton);
+            rootVisualElement.Add(_board);
+            rootVisualElement.schedule.Execute(() => { _game.Run(); }).ExecuteLater(1000);
         }
     }
 }
