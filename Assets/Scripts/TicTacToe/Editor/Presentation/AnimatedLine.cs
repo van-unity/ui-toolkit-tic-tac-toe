@@ -2,23 +2,23 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace TicTacToe.Editor {
+namespace TicTacToe.Editor.Presentation {
     public class AnimatedLine : VisualElement {
         private const float HUNDRED_PIXEL_DURATION = 0.075f;
         private const EasingMode EASING_MODE = EasingMode.EaseOutSine;
 
         public AnimatedLine(Vector2 from, Vector2 to) {
-            if (to.y < from.y) {
+            if (to.x < from.x) {
                 (to, from) = (from, to);
             }
 
             // var width = Vector2.Distance(from, to);
 
             var direction = to - from;
-            var angleDeg = Mathf.Atan2(direction.x, direction.y) * Mathf.Rad2Deg;
+            var angleDeg = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
             var width = direction.magnitude;
-            var left = from.y;
-            var top = from.x;
+            var left = from.x;
+            var top = from.y;
             var durationInSeconds = width / 100 * HUNDRED_PIXEL_DURATION;
 
             this.style.width = 1;
@@ -34,7 +34,9 @@ namespace TicTacToe.Editor {
                 { new(durationInSeconds, TimeUnit.Second) });
             this.transform.rotation = Quaternion.AngleAxis(angleDeg, Vector3.forward);
             this.schedule
-                .Execute(() => this.style.width = width)
+                .Execute(() => {
+                    this.style.width = width;
+                })
                 .ExecuteLater(16);
         }
     }

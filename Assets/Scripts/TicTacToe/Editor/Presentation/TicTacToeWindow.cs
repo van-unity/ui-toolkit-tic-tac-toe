@@ -1,17 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
-using TicTacToe.Editor.Utils;
-using TicTacToe.Editor.VisualElementExtensions;
 using UnityEditor;
-using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
-using Random = UnityEngine.Random;
 
-namespace TicTacToe.Editor {
+namespace TicTacToe.Editor.Presentation {
     public class TicTacToeWindow : UnityEditor.EditorWindow {
         private readonly int[,] _matrix = new int[3, 3] {
             { 0, 0, 0, },

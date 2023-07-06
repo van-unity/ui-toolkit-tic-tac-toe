@@ -5,17 +5,11 @@ using UnityEngine.UIElements;
 using Random = UnityEngine.Random;
 
 namespace TicTacToe.Editor {
-    public enum PlayerSymbol {
-        None = 0,
-        X = 1,
-        O = 2
-    }
-
     public abstract class Player {
         protected readonly Board _board;
         protected readonly PlayerSymbol _symbol;
 
-        public event Action<int, int, PlayerSymbol> MoveMade;
+        public event Action<BoardPosition, PlayerSymbol> MoveMade;
 
         protected Player(Board board, PlayerSymbol symbol) {
             _board = board;
@@ -24,16 +18,16 @@ namespace TicTacToe.Editor {
 
         public abstract void Play();
 
-        protected bool TryMakeMove(int rowIndex, int columnIndex) {
-            if (_board.ValueAt(rowIndex, columnIndex) != PlayerSymbol.None) {
+        protected bool TryMakeMove(BoardPosition position) {
+            if (_board.ValueAt(position) != PlayerSymbol.None) {
                 // The cell is already occupied, return false
                 return false;
             }
 
-            _board.PlaceSymbolAt(_symbol, rowIndex, columnIndex);
+            _board.PlaceSymbolAt(_symbol, position);
 
             // Trigger the MoveMade event
-            MoveMade?.Invoke(rowIndex, columnIndex, _symbol);
+            MoveMade?.Invoke(position, _symbol);
 
             // The move was successful, return true
             return true;
@@ -52,7 +46,7 @@ namespace TicTacToe.Editor {
             var localPos = clickEvent.localPosition;
             var logicPos = _board.PixelToLogicPos(localPos);
 
-            TryMakeMove(logicPos.x, logicPos.y);
+            TryMakeMove(logicPos);
 
             _board.UnregisterCallback<ClickEvent>(OnBoardClick);
         }
@@ -68,11 +62,9 @@ namespace TicTacToe.Editor {
 
         private async Task PlayAsync() {
             await Task.Delay(300);
-            var randomRowIndex = (int)Random.Range(0, _board.Rows);
-            var randomColumnIndex = (int)Random.Range(0, _board.Columns);
-            while (!TryMakeMove(randomRowIndex, randomColumnIndex)) {
-                randomRowIndex = (int)Random.Range(0, _board.Rows);
-                randomColumnIndex = (int)Random.Range(0, _board.Columns);
+            var randomPos = new BoardPosition(Random.Range(0, _board.Rows), Random.Range(0, _board.Columns));
+            while (!TryMakeMove(randomPos)) {
+                randomPos = new BoardPosition(Random.Range(0, _board.Rows), Random.Range(0, _board.Columns));
                 await Task.Yield();
             }
         }

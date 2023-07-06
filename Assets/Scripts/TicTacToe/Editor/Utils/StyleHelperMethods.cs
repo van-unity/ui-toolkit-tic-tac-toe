@@ -27,13 +27,5 @@ namespace TicTacToe.Editor.Utils {
                 throw new WarningException("Empty style path!");
             }
         }
-
-        internal static async void RemoveClassAsync(this VisualElement element, string className,
-            int milliseconds, Action callback = null) {
-            element.RemoveFromClassList(className);
-            await Task.Delay(milliseconds);
-
-            callback?.Invoke();
-        }
     }
 }

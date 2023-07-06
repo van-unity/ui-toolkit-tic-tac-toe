@@ -33,13 +33,7 @@
     color: black;
 }
 
-.x {
-    position: absolute;
-    color: #f8f7f6;
-    -unity-text-align: middle-center;
-}
-
-.o {
+.player-symbol {
     position: absolute;
     color: #f8f7f6;
     -unity-text-align: middle-center;
