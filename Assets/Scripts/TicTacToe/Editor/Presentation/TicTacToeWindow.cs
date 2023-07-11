@@ -1,20 +1,17 @@
 using System.Threading;
+using TicTacToe.Editor.Application;
+using TicTacToe.Editor.Domain;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace TicTacToe.Editor.Presentation {
     public class TicTacToeWindow : UnityEditor.EditorWindow {
-        private readonly int[,] _matrix = new int[3, 3] {
-            { 0, 0, 0, },
-            { 0, 0, 0, },
-            { 0, 0, 0, },
-        };
-
         private CancellationTokenSource _cancelOnDestroy;
-        private TicTacToeSettings _settings;
-        private Game _game;
-        private Board _board;
+        
+        // private Game _game;
+        private BoardView _board;
+        private GameController _gameController;
 
         [MenuItem("TicTacToe/Play")]
         private static void ShowWindow() {
@@ -25,26 +22,39 @@ namespace TicTacToe.Editor.Presentation {
 
         private void OnEnable() {
             _cancelOnDestroy = new CancellationTokenSource();
-            _board = new Board((int[,])_matrix.Clone());
-            var playerX = new ManualPlayer(_board, PlayerSymbol.X);
-            var playerO = new AutomatedPlayer(_board, PlayerSymbol.O);
-            _game = new Game(playerX, playerO, _board);
+            CreateGame();
+        }
+
+        private void CreateGame() {
+            var boardModel = new BoardModel(3, 3);
+            _board = new BoardView(3, 3);
+            var boardController = new BoardController(boardModel, _board);
+            _board.SetController(boardController);
+            var manualStrategy = new ManualMoveStrategy();
+            var autoStrategy = new EaseAutomatedMoveStrategy(1000);
+            var playerX = new Player(PlayerType.Manual, PlayerSymbol.X, manualStrategy, boardModel);
+            var playerO = new Player(PlayerType.Auto, PlayerSymbol.O, autoStrategy, boardModel);
+            _gameController = new GameController(new IPlayer[] { playerX, playerO }, boardController);
         }
 
         private void OnDisable() {
             _cancelOnDestroy.Cancel();
-            _game.Dispose();
+            _gameController.Dispose();
         }
 
         private void CreateGUI() {
             var restartButton = new Button(() => {
                 rootVisualElement.Clear();
+                CreateGame();
                 CreateGUI();
             }) { text = "Restart Game" };
 
             rootVisualElement.Add(restartButton);
             rootVisualElement.Add(_board);
-            rootVisualElement.schedule.Execute(() => { _game.Run(); }).ExecuteLater(1000);
+            rootVisualElement.schedule.Execute(() => {
+                _board.DrawBoardLines();
+                _gameController.Start();
+            }).ExecuteLater(1000);
         }
     }
 }

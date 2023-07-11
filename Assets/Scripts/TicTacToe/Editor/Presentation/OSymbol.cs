@@ -6,6 +6,7 @@ namespace TicTacToe.Editor.Presentation {
             this.style.fontSize = size;
             this.style.width = width;
             this.style.height = height;
+            this.style.position = new StyleEnum<Position>(Position.Absolute);
         }
     }
 }

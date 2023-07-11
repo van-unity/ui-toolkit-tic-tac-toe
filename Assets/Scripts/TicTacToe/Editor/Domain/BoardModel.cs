@@ -1,4 +1,4 @@
-namespace TicTacToe.Editor {
+namespace TicTacToe.Editor.Domain {
     public class BoardModel {
         private readonly PlayerSymbol[,] _state;
 
@@ -11,11 +11,20 @@ namespace TicTacToe.Editor {
             _state = new PlayerSymbol[Rows, Columns];
         }
 
-        public void PlaceSymbolAt(PlayerSymbol symbol, BoardPosition position) {
+        public void SetValueAt(BoardPosition position, PlayerSymbol symbol) =>
             _state[position.rowIndex, position.columnIndex] = symbol;
-        }
 
-        public PlayerSymbol ValueAt(BoardPosition position) => _state[position.rowIndex, position.columnIndex];
+        public void SetValueAt(int rowIndex, int columnIndex, PlayerSymbol symbol) =>
+            _state[rowIndex, columnIndex] = symbol;
+
+
+        public PlayerSymbol GetValueAt(int rowIndex, int columnIndex) => _state[rowIndex, columnIndex];
+        public PlayerSymbol GetValueAt(BoardPosition position) => _state[position.rowIndex, position.columnIndex];
+
+        public bool IsMoveValid(int rowIndex, int columnIndex) => _state[rowIndex, columnIndex] == PlayerSymbol.None;
+
+        public bool IsMoveValid(BoardPosition position) =>
+            _state[position.rowIndex, position.columnIndex] == PlayerSymbol.None;
 
         public bool IsBoardFull() {
             for (int rowIndex = 0; rowIndex < Rows; rowIndex++) {

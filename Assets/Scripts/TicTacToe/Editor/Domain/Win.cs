@@ -1,5 +1,5 @@
-namespace TicTacToe.Editor {
-    public class Win {
+namespace TicTacToe.Editor.Domain {
+    public class  Win {
         public PlayerSymbol Symbol { get; }
         public BoardPosition Start { get; }
         public BoardPosition End { get; }
