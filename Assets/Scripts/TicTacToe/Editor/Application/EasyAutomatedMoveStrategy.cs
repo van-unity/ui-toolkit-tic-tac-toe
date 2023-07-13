@@ -1,29 +1,26 @@
-using System;
 using System.Threading.Tasks;
 using TicTacToe.Editor.Domain;
 
 namespace TicTacToe.Editor.Application {
-    public class EaseAutomatedMoveStrategy : IPlayerMoveStrategy {
+    public class EaseAutomatedMoveStrategy : IMoveStrategy {
+        private readonly BoardModel _board;
         private readonly int _delayInMs;
 
-        public EaseAutomatedMoveStrategy(int delayInMs) {
+        public EaseAutomatedMoveStrategy(BoardModel board, int delayInMs) {
+            _board = board;
             _delayInMs = delayInMs;
         }
 
-        public async void Execute(BoardModel model, BoardPosition clickPosition, Action<BoardPosition> callback) {
+        public async Task ExecuteAsync(IPlayer player, BoardPosition? clickPosition = null) {
             await Task.Delay(_delayInMs);
-            
-            for (int rowIndex = 0; rowIndex < model.Rows; rowIndex++) {
-                for (int columnIndex = 0; columnIndex < model.Columns; columnIndex++) {
-                    if (model.IsMoveValid(rowIndex, columnIndex)) {
-                        callback(new BoardPosition(rowIndex, columnIndex));
-                        return;
-                    }
-                }
+
+            var emptyCells = _board.GetEmptyCells();
+            if (emptyCells.Count <= 0) {
+                return;
             }
 
-
-            callback(BoardPosition.NotValid());
+            var chosenCell = emptyCells[UnityEngine.Random.Range(0, emptyCells.Count)];
+            _board.UpdateCell(chosenCell, player.Symbol);
         }
     }
 }

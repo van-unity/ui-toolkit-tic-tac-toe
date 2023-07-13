@@ -1,65 +1,58 @@
-using System;
 using TicTacToe.Editor.Domain;
-using UnityEngine;
+using TicTacToe.Editor.Presentation;
 
 namespace TicTacToe.Editor.Application {
-    public class GameController : IDisposable {
+    public class GameController {
         private readonly IPlayer[] _players;
-        private readonly BoardController _boardController;
+        private readonly BoardModel _board;
+        private readonly BoardView _boardView;
 
         private int _currentPlayerIndex;
-        private bool _canPlay;
+        private bool _isGameEnded;
 
-        public GameController(IPlayer[] players, BoardController boardController) {
-            _players = new IPlayer[players.Length];
-            Array.Copy(players, _players, players.Length);
+        public GameController(IPlayer[] players, BoardView boardView, BoardModel boardModel) {
+            _players = players;
             _currentPlayerIndex = 0;
-            _boardController = boardController;
-            _boardController.CellClicked += OnCellClicked;
-            _boardController.Win += OnWin;
-            _boardController.Draw += OnDraw;
+            _board = boardModel;
+            _boardView = boardView;
+            _board.CellUpdated += BoardOnCellUpdated;
+            _boardView.CellClicked += BoardViewOnCellClicked;
         }
 
-        private void PlayerOnMoved(PlayerMovedResult result) {
-            _boardController.UpdateCell(result.MovePosition, result.Symbol);
-            _canPlay = true;
-            _currentPlayerIndex = _currentPlayerIndex == 0 ? 1 : 0;
-            if (_players[_currentPlayerIndex].PlayerType == PlayerType.Auto) {
-                _players[_currentPlayerIndex].Move(BoardPosition.Empty(), PlayerOnMoved);
+        private async void BoardViewOnCellClicked(BoardPosition position) {
+            if (_isGameEnded) {
+                return;
             }
-        }
-
-        private void OnDraw() {
-            // handle draw
-            Debug.LogError("draw");
-        }
-
-        private void OnWin(Win obj) {
-            // handle win
-            Debug.LogError("win");
-        }
-
-        public void Start() {
-            _canPlay = true;
-            if (_players[_currentPlayerIndex].PlayerType == PlayerType.Auto) {
-                _canPlay = false;
-                _players[_currentPlayerIndex].Move(BoardPosition.Empty(), PlayerOnMoved);
-            }
-        }
-
-        private void OnCellClicked(BoardPosition cellPosition) {
-            if (!_canPlay || _players[_currentPlayerIndex].PlayerType != PlayerType.Manual) {
+            if (_players[_currentPlayerIndex].PlayerType != PlayerType.Manual) {
                 return;
             }
 
-            _canPlay = false;
-            _players[_currentPlayerIndex].Move(cellPosition, PlayerOnMoved);
+            if (!_board.IsMoveValid(position)) {
+                return;
+            }
+
+            await _players[_currentPlayerIndex].TakeTurn(position);
         }
 
-        public void Dispose() {
-            _boardController.CellClicked -= OnCellClicked;
-            _boardController.Win -= OnWin;
-            _boardController.Draw -= OnDraw;
+        private void BoardOnCellUpdated(BoardPosition position, Symbol symbol) {
+            _boardView.UpdateCell(position, symbol);
+            if (_board.HasWinner(position, out var win)) {
+                _boardView.DrawWinningLine(win.Start, win.End);
+                return;
+            }
+
+            _currentPlayerIndex = _currentPlayerIndex == 0 ? 1 : 0;
+            PlayIfAuto();
+        }
+
+        public void Start() {
+            PlayIfAuto();
+        }
+
+        private async void PlayIfAuto() {
+            if (_players[_currentPlayerIndex].PlayerType == PlayerType.Auto) {
+                await _players[_currentPlayerIndex].TakeTurn(BoardPosition.Empty());
+            }
         }
     }
 }

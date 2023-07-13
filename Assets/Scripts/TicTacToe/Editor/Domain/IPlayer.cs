@@ -1,9 +1,10 @@
 using System;
+using System.Threading.Tasks;
 
 namespace TicTacToe.Editor.Domain {
     public interface IPlayer {
-        PlayerSymbol Symbol { get; }
+        Symbol Symbol { get; }
         PlayerType PlayerType { get; }
-        void Move(BoardPosition clickPosition, Action<PlayerMovedResult> callback);
+        Task TakeTurn(BoardPosition clickPosition);
     }
 }

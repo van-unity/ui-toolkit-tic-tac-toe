@@ -1,0 +1,7 @@
+.cell {
+    position: absolute;
+    color: #f8f7f6;
+    align-items: center;
+    justify-content: center;
+    -unity-font-style: bold;
+}

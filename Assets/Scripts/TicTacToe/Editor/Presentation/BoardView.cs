@@ -1,4 +1,4 @@
-using TicTacToe.Editor.Application;
+using System;
 using TicTacToe.Editor.Domain;
 using TicTacToe.Editor.Utils;
 using UnityEngine;
@@ -8,42 +8,45 @@ namespace TicTacToe.Editor.Presentation {
     public class BoardView : VisualElement {
         private const string STYLE_NAME = "Board";
 
-        private readonly VisualElement _linesContainer;
+        private readonly VisualElement _gridLinesContainer;
         private readonly VisualElement _cellsContainer;
+        private readonly VisualElement _winningLineContainer;
         private readonly int _rows;
         private readonly int _columns;
-        private BoardController _controller;
+
+        public event Action<BoardPosition> CellClicked; 
 
         public BoardView(int rows, int columns) {
             _rows = rows;
             _columns = columns;
             StyleHelperMethods.SetStyleFromPath(this, STYLE_NAME);
             this.AddToClassList("board");
-            _linesContainer = new VisualElement();
-            _linesContainer.AddToClassList("lines-container");
+            _gridLinesContainer = new VisualElement();
+            _gridLinesContainer.AddToClassList("grid-lines-container");
             _cellsContainer = new VisualElement();
             _cellsContainer.AddToClassList("cells-container");
+            _winningLineContainer = new VisualElement();
+            _winningLineContainer.AddToClassList("winning-lines-container");
             this.Add(_cellsContainer);
-            this.Add(_linesContainer);
+            this.Add(_gridLinesContainer);
             this.RegisterCallback<ClickEvent>(OnClick);
         }
 
         private void OnClick(ClickEvent clickEvent) {
-            _controller.HandleClick(clickEvent.localPosition);
+            var boardPos = PixelToLogicPos(clickEvent.localPosition);
+            CellClicked?.Invoke(boardPos);
         }
 
-        public void SetController(BoardController controller) {
-            _controller = controller;
-        }
-
-        public void UpdateCell(BoardPosition position, PlayerSymbol symbol) {
+        public void UpdateCell(BoardPosition position, Symbol symbol) {
             var cellWidth = GetCellWidth();
             var cellHeight = GetCellHeight();
             var symbolSize = Mathf.CeilToInt(Mathf.Min(cellWidth, cellHeight));
-            var element = symbol == PlayerSymbol.O
-                ? (Label)new OSymbol(symbolSize, cellWidth, cellHeight)
-                : new XSymbol(symbolSize, cellWidth, cellHeight);
-            element.AddToClassList("player-symbol");
+            var element = new Cell(symbolSize, symbol.ToString()) {
+                style = {
+                    width = cellWidth,
+                    height = cellHeight
+                }
+            };
             var left = position.columnIndex * cellWidth;
             var top = position.rowIndex * cellHeight;
             element.style.left = left;
@@ -51,7 +54,7 @@ namespace TicTacToe.Editor.Presentation {
             _cellsContainer.Add(element);
         }
 
-        public void DrawBoardLines() {
+        public void DrawGrid() {
             var cellWidth = GetCellWidth();
             var cellHeight = GetCellHeight();
             for (int columnIndex = 1; columnIndex < _columns; columnIndex++) {
@@ -60,8 +63,8 @@ namespace TicTacToe.Editor.Presentation {
                 from.y += .1f * cellHeight;
                 to.y -= .1f * cellHeight;
                 var line = new AnimatedLine(from, to);
-                line.AddToClassList("board-line");
-                _linesContainer.Add(line);
+                line.AddToClassList("grid-line");
+                _gridLinesContainer.Add(line);
             }
 
             for (int rowIndex = 1; rowIndex < _rows; rowIndex++) {
@@ -70,8 +73,8 @@ namespace TicTacToe.Editor.Presentation {
                 from.x += .1f * cellWidth;
                 to.x -= .1f * cellWidth;
                 var line = new AnimatedLine(from, to);
-                line.AddToClassList("board-line");
-                _linesContainer.Add(line);
+                line.AddToClassList("grid-line");
+                _gridLinesContainer.Add(line);
             }
         }
 
@@ -86,7 +89,7 @@ namespace TicTacToe.Editor.Presentation {
             toPixel.y += cellHeight * .5f;
             var line = new AnimatedLine(fromPixel, toPixel);
             line.AddToClassList("winning-line");
-            _linesContainer.Add(line);
+            _gridLinesContainer.Add(line);
         }
 
         public Vector2 LogicToPixelPos(BoardPosition logicPos) =>
@@ -103,6 +106,6 @@ namespace TicTacToe.Editor.Presentation {
         }
 
         private float GetCellWidth() => layout.width / _columns;
-        private float GetCellHeight() => layout.width / _rows;
+        private float GetCellHeight() => layout.height / _rows;
     }
 }

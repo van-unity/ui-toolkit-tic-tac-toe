@@ -10,8 +10,9 @@ namespace TicTacToe.Editor.Presentation {
         private CancellationTokenSource _cancelOnDestroy;
         
         // private Game _game;
-        private BoardView _board;
+        private BoardView _boardView;
         private GameController _gameController;
+        private VisualElement _popupsContainer;
 
         [MenuItem("TicTacToe/Play")]
         private static void ShowWindow() {
@@ -26,20 +27,17 @@ namespace TicTacToe.Editor.Presentation {
         }
 
         private void CreateGame() {
-            var boardModel = new BoardModel(3, 3);
-            _board = new BoardView(3, 3);
-            var boardController = new BoardController(boardModel, _board);
-            _board.SetController(boardController);
-            var manualStrategy = new ManualMoveStrategy();
-            var autoStrategy = new EaseAutomatedMoveStrategy(1000);
-            var playerX = new Player(PlayerType.Manual, PlayerSymbol.X, manualStrategy, boardModel);
-            var playerO = new Player(PlayerType.Auto, PlayerSymbol.O, autoStrategy, boardModel);
-            _gameController = new GameController(new IPlayer[] { playerX, playerO }, boardController);
+            var board = new BoardModel(3, 3);
+            _boardView = new BoardView(3, 3);
+            var manualStrategy = new ManualMoveStrategy(board);
+            var autoStrategy = new EaseAutomatedMoveStrategy(board, 1000);
+            var playerX = new Player(PlayerType.Manual, Symbol.X, manualStrategy);
+            var playerO = new Player(PlayerType.Auto, Symbol.O, autoStrategy);
+            _gameController = new GameController(new IPlayer[] { playerX, playerO }, _boardView, board);
         }
 
         private void OnDisable() {
             _cancelOnDestroy.Cancel();
-            _gameController.Dispose();
         }
 
         private void CreateGUI() {
@@ -49,10 +47,12 @@ namespace TicTacToe.Editor.Presentation {
                 CreateGUI();
             }) { text = "Restart Game" };
 
+            _popupsContainer = new VisualElement();
             rootVisualElement.Add(restartButton);
-            rootVisualElement.Add(_board);
+            rootVisualElement.Add(_boardView);
+            rootVisualElement.Add(_popupsContainer);
             rootVisualElement.schedule.Execute(() => {
-                _board.DrawBoardLines();
+                _boardView.DrawGrid();
                 _gameController.Start();
             }).ExecuteLater(1000);
         }
