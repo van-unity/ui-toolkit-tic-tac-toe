@@ -1,60 +1,41 @@
-using System.Threading;
+using System;
 using TicTacToe.Editor.Application;
 using TicTacToe.Editor.Domain;
-using UnityEditor;
-using UnityEngine;
+using TicTacToe.Editor.Utils;
 using UnityEngine.UIElements;
 
 namespace TicTacToe.Editor.Presentation {
     public class TicTacToeWindow : UnityEditor.EditorWindow {
-        private CancellationTokenSource _cancelOnDestroy;
-        
-        // private Game _game;
-        private BoardView _boardView;
-        private GameController _gameController;
-        private VisualElement _popupsContainer;
-
-        [MenuItem("TicTacToe/Play")]
-        private static void ShowWindow() {
-            var window = GetWindow<TicTacToeWindow>();
-            window.titleContent = new GUIContent("TicTacToe-UiToolkit");
-            window.Show();
-        }
-
-        private void OnEnable() {
-            _cancelOnDestroy = new CancellationTokenSource();
-            CreateGame();
-        }
-
-        private void CreateGame() {
-            var board = new BoardModel(3, 3);
-            _boardView = new BoardView(3, 3);
-            var manualStrategy = new ManualMoveStrategy(board);
-            var autoStrategy = new EaseAutomatedMoveStrategy(board, 1000);
-            var playerX = new Player(PlayerType.Manual, Symbol.X, manualStrategy);
-            var playerO = new Player(PlayerType.Auto, Symbol.O, autoStrategy);
-            _gameController = new GameController(new IPlayer[] { playerX, playerO }, _boardView, board);
-        }
-
-        private void OnDisable() {
-            _cancelOnDestroy.Cancel();
-        }
+        public event Action<Symbol, PlayerType> PlayerTypeChanged;
 
         private void CreateGUI() {
+            // StyleHelperMethods.SetStyleFromPath(rootVisualElement, "TicTacToeWindow");
             var restartButton = new Button(() => {
+                Main.Restart();
                 rootVisualElement.Clear();
-                CreateGame();
                 CreateGUI();
             }) { text = "Restart Game" };
 
-            _popupsContainer = new VisualElement();
+
+            var playerTypesContainer = new PlayerTypesContainer(
+                Main.PlayerTypeBySymbol[Symbol.X],
+                Main.PlayerTypeBySymbol[Symbol.O]
+            );
+
+            playerTypesContainer.PlayerXTypeChanged += OnPlayerXTypeChanged;
+            playerTypesContainer.PlayerOTypeChanged += OnPlayerOTypeChanged;
+
+            rootVisualElement.Add(playerTypesContainer);
+            rootVisualElement.Add(Main.BoardView);
             rootVisualElement.Add(restartButton);
-            rootVisualElement.Add(_boardView);
-            rootVisualElement.Add(_popupsContainer);
-            rootVisualElement.schedule.Execute(() => {
-                _boardView.DrawGrid();
-                _gameController.Start();
-            }).ExecuteLater(1000);
+        }
+
+        private void OnPlayerXTypeChanged(PlayerType newPlayerType) {
+            PlayerTypeChanged?.Invoke(Symbol.X, newPlayerType);
+        }
+
+        private void OnPlayerOTypeChanged(PlayerType newPlayerType) {
+            PlayerTypeChanged?.Invoke(Symbol.O, newPlayerType);
         }
     }
 }

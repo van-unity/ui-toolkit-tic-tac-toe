@@ -1,8 +1,9 @@
+using System;
 using TicTacToe.Editor.Domain;
 using TicTacToe.Editor.Presentation;
 
 namespace TicTacToe.Editor.Application {
-    public class GameController {
+    public class GameController : IDisposable{
         private readonly IPlayer[] _players;
         private readonly BoardModel _board;
         private readonly BoardView _boardView;
@@ -23,6 +24,7 @@ namespace TicTacToe.Editor.Application {
             if (_isGameEnded) {
                 return;
             }
+
             if (_players[_currentPlayerIndex].PlayerType != PlayerType.Manual) {
                 return;
             }
@@ -31,7 +33,7 @@ namespace TicTacToe.Editor.Application {
                 return;
             }
 
-            await _players[_currentPlayerIndex].TakeTurn(position);
+            await _players[_currentPlayerIndex].TakeTurn(_board, position);
         }
 
         private void BoardOnCellUpdated(BoardPosition position, Symbol symbol) {
@@ -51,8 +53,13 @@ namespace TicTacToe.Editor.Application {
 
         private async void PlayIfAuto() {
             if (_players[_currentPlayerIndex].PlayerType == PlayerType.Auto) {
-                await _players[_currentPlayerIndex].TakeTurn(BoardPosition.Empty());
+                await _players[_currentPlayerIndex].TakeTurn(_board, BoardPosition.Empty());
             }
+        }
+
+        public void Dispose() {
+            _board.CellUpdated -= BoardOnCellUpdated;
+            _boardView.CellClicked -= BoardViewOnCellClicked;
         }
     }
 }

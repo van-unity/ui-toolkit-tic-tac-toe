@@ -13,7 +13,7 @@ namespace TicTacToe.Editor.Application {
             _moveStrategy = moveStrategy;
         }
 
-        public Task TakeTurn(BoardPosition clickPosition) =>
-            _moveStrategy.ExecuteAsync(this, clickPosition);
+        public Task TakeTurn(BoardModel board, BoardPosition clickPosition) =>
+            _moveStrategy.ExecuteAsync(this, board, clickPosition);
     }
 }

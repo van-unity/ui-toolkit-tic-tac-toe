@@ -5,6 +5,6 @@ namespace TicTacToe.Editor.Domain {
     public interface IPlayer {
         Symbol Symbol { get; }
         PlayerType PlayerType { get; }
-        Task TakeTurn(BoardPosition clickPosition);
+        Task TakeTurn(BoardModel board, BoardPosition clickPosition);
     }
 }
