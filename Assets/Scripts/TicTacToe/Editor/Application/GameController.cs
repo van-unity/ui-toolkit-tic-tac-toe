@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using TicTacToe.Editor.Domain;
 using TicTacToe.Editor.Presentation;
 
@@ -40,8 +41,8 @@ namespace TicTacToe.Editor.Application {
         private void BoardOnCellUpdated(BoardPosition position, Symbol symbol) {
             if (_board.HasWinner(out var win)) {
                 GameWon?.Invoke(win);
-                _popupManager.ShowWinPopup(this, win);
                 IsGameStarted = false;
+                WaitAndShowWinPopup(win);
                 return;
             }
 
@@ -54,6 +55,11 @@ namespace TicTacToe.Editor.Application {
             _playersLookup[_currentPlayer].MakeMove(_board, OnPlayerMoved);
         }
 
+        private async void WaitAndShowWinPopup(Win win) {
+            await Task.Delay(1000);
+            _popupManager.ShowWinPopup(this, win);
+        }
+        
         public void Start() {
             _currentPlayer = Symbol.X;
             IsGameStarted = true;
