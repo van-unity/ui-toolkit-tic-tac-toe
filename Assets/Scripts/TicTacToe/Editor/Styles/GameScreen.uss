@@ -1,15 +1,8 @@
-:root {
-    --color-white: #f8f7f6;
-    --color-light-green: #8DE4AF;
-    --color-dark-green: #389485;
-}
-
-
 .game-screen {
     position: relative;
     flex: 1;
     flex-direction: column;
-    background-color: var(--color-white);
+    background-color: #f8f7f6;
 }
 
 .top-part {

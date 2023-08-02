@@ -7,5 +7,6 @@ namespace TicTacToe.Editor.Domain {
         event Action GameDraw;
         event Action GameStarted;
         event Action<Symbol, PlayerMode> PlayerModeChanged;
+        event Action BeforeRestart;
     }
 }

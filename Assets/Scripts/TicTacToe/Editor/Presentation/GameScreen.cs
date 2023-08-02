@@ -1,7 +1,5 @@
-using System;
 using TicTacToe.Editor.Domain;
 using TicTacToe.Editor.VisualElementExtensions;
-using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace TicTacToe.Editor.Presentation {

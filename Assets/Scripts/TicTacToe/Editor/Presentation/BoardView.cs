@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using TicTacToe.Editor.Domain;
 using TicTacToe.Editor.VisualElementExtensions;

@@ -32,7 +32,6 @@ namespace TicTacToe.Editor.Application {
         }
 
         private void OnRestartButtonClick(RestartButtonClicked evt) {
-            _view.ClearTheBoard();
             _gameController.Restart();
         }
 
@@ -48,6 +47,11 @@ namespace TicTacToe.Editor.Application {
             _gameEvents.GameWon += OnGameWon;
             _gameEvents.GameDraw += OnGameDraw;
             _gameEvents.PlayerModeChanged += OnPlayerModeChanged;
+            _gameEvents.BeforeRestart += OnBeforeRestart;
+        }
+
+        private void OnBeforeRestart() {
+            _view.ClearTheBoard();
         }
 
         private void InitializeTheView() {
@@ -96,6 +100,7 @@ namespace TicTacToe.Editor.Application {
             _gameEvents.GameWon -= OnGameWon;
             _gameEvents.GameDraw -= OnGameDraw;
             _gameEvents.PlayerModeChanged -= OnPlayerModeChanged;
+            _gameEvents.BeforeRestart -= OnBeforeRestart;
         }
 
         private void OnTurnChanged(Symbol symbol) {

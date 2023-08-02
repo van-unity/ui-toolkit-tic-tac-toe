@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using TicTacToe.Editor.Domain;
+using TicTacToe.Editor.Presentation;
 
 namespace TicTacToe.Editor.Application {
     public class GameController : IGameController, IGameEventsProvider, IDisposable {
@@ -9,6 +10,7 @@ namespace TicTacToe.Editor.Application {
         private readonly IGameSettings _gameSettings;
         private readonly IMoveStrategy _manualMoveStrategy;
         private readonly IMoveStrategy _automatedMoveStrategy;
+        private readonly PopupManager _popupManager;
         
         private Symbol _currentPlayer;
         public bool IsGameStarted { get; private set; }
@@ -18,9 +20,10 @@ namespace TicTacToe.Editor.Application {
         public event Action<Win> GameWon;
         public event Action GameDraw;
         public event Action<Symbol, PlayerMode> PlayerModeChanged;
+        public event Action BeforeRestart;
 
         public GameController(IPlayer playerX, IPlayer playerO, BoardModel boardModel, IGameSettings gameSettings,
-            IMoveStrategy manualMoveStrategy, IMoveStrategy automatedMoveStrategy) {
+            IMoveStrategy manualMoveStrategy, IMoveStrategy automatedMoveStrategy, PopupManager popupManager) {
             _playersLookup = new Dictionary<Symbol, IPlayer>() {
                 { Symbol.X, playerX },
                 { Symbol.O, playerO }
@@ -29,7 +32,7 @@ namespace TicTacToe.Editor.Application {
             _gameSettings = gameSettings;
             _manualMoveStrategy = manualMoveStrategy;
             _automatedMoveStrategy = automatedMoveStrategy;
-
+            _popupManager = popupManager;
             _currentPlayer = Symbol.X;
             _board.CellUpdated += BoardOnCellUpdated;
         }
@@ -37,6 +40,7 @@ namespace TicTacToe.Editor.Application {
         private void BoardOnCellUpdated(BoardPosition position, Symbol symbol) {
             if (_board.HasWinner(out var win)) {
                 GameWon?.Invoke(win);
+                _popupManager.ShowWinPopup(this, win);
                 IsGameStarted = false;
                 return;
             }
@@ -59,8 +63,10 @@ namespace TicTacToe.Editor.Application {
         }
 
         public void Restart() {
+            BeforeRestart?.Invoke();
             _board.Reset();
             Start();
+            
         }
 
         public void TogglePlayerMode(Symbol playerSymbol) {

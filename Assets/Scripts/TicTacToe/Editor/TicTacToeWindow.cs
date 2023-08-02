@@ -2,6 +2,7 @@ using System;
 using TicTacToe.Editor.Application;
 using TicTacToe.Editor.Domain;
 using TicTacToe.Editor.Presentation;
+using TicTacToe.Editor.VisualElementExtensions;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -18,6 +19,7 @@ namespace TicTacToe.Editor {
         private IGameSettings _gameSettings;
         private IMoveStrategy _manualMoveStrategy;
         private IMoveStrategy _automatedMoveStrategy;
+        private PopupManager _popupManager;
 
 
         private void OnEnable() {
@@ -30,8 +32,14 @@ namespace TicTacToe.Editor {
             _automatedMoveStrategy = new EaseAutomatedMoveStrategy();
             CreatePlayerO();
             CreatePlayerX();
+
+            var popupsContainer = new VisualElement();
+            popupsContainer.SetStyleFromPath("PopupsContainer");
+            popupsContainer.AddToClassList("popups-container");
+            _popupManager = new PopupManager(popupsContainer);
+
             var gameController = new GameController(_playerX, _playerO, _board, _gameSettings, _manualMoveStrategy,
-                _automatedMoveStrategy);
+                _automatedMoveStrategy, _popupManager);
             _gameController = gameController;
             _gameEvents = gameController;
             rootVisualElement.RegisterCallback<GeometryChangedEvent>(evt => evt.PreventDefault());
@@ -88,10 +96,10 @@ namespace TicTacToe.Editor {
                 _gameController, _gameSettings);
 
             rootVisualElement.Add(gameScreen);
+            rootVisualElement.Add(_popupManager.Container);
         }
 
         private void OnDisable() {
-            
         }
     }
 }
