@@ -1,19 +1,29 @@
+using System;
 using System.Threading.Tasks;
 using TicTacToe.Editor.Domain;
 
 namespace TicTacToe.Editor.Application {
     public class Player : IPlayer {
-        private readonly IMoveStrategy _moveStrategy;
+        private IMoveStrategy _moveStrategy;
         public Symbol Symbol { get; }
-        public PlayerType PlayerType { get; }
+        public PlayerMode PlayerMode { get; private set; }
 
-        public Player(PlayerType playerType, Symbol symbol, IMoveStrategy moveStrategy) {
-            PlayerType = playerType;
+        public Player(PlayerMode playerMode, Symbol symbol, IMoveStrategy moveStrategy) {
+            PlayerMode = playerMode;
             Symbol = symbol;
             _moveStrategy = moveStrategy;
         }
 
-        public Task TakeTurn(BoardModel board, BoardPosition clickPosition) =>
-            _moveStrategy.ExecuteAsync(this, board, clickPosition);
+        public void SetMode(PlayerMode mode) {
+            PlayerMode = mode;
+        }
+
+        public void SetStrategy(IMoveStrategy strategy) {
+            _moveStrategy = strategy;
+        }
+        
+        public void MakeMove(BoardModel boardModel, Action<BoardPosition> callback) {
+            _moveStrategy.Play(boardModel, callback);
+        }
     }
 }

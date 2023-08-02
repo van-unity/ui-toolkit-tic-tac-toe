@@ -1,23 +1,19 @@
-.player-type-element {
+.player-mode-element {
     position: relative;
     flex-direction: row;
-    /*align-items: center;*/
+    align-items: flex-start;
     justify-content: center;
     flex: 1;
 }
 
-.symbol {
+.symbol-label {
     -unity-font-style: bold;
     font-size: 32px;
     color: #212121;
-    /*flex: 1;*/
 }
 
-.player-type-button {
+.mode-label {
     -unity-font-style: bold;
     font-size: 24px;
     color: #212121;
-    /*min-width: 144px;*/
-    /*flex: 1;*/
-    /*-unity-text-align: middle-right;*/
 } 

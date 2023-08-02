@@ -4,7 +4,10 @@ using System.Threading.Tasks;
 namespace TicTacToe.Editor.Domain {
     public interface IPlayer {
         Symbol Symbol { get; }
-        PlayerType PlayerType { get; }
-        Task TakeTurn(BoardModel board, BoardPosition clickPosition);
+        PlayerMode PlayerMode { get; }
+        void SetMode(PlayerMode mode);
+        void SetStrategy(IMoveStrategy strategy);
+
+        public void MakeMove(BoardModel model, Action<BoardPosition> callback = null);
     }
 }

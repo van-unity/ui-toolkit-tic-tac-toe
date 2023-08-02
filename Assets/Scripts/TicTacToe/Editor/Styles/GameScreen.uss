@@ -1,0 +1,65 @@
+:root {
+    --color-white: #f8f7f6;
+    --color-light-green: #8DE4AF;
+    --color-dark-green: #389485;
+}
+
+
+.game-screen {
+    position: relative;
+    flex: 1;
+    flex-direction: column;
+    background-color: var(--color-white);
+}
+
+.top-part {
+    justify-content: space-between;
+    flex-direction: column;
+    align-items: center;
+    flex: .2;
+}
+
+.grid-part {
+    flex: .7;
+}
+
+.bottom-part {
+    flex: .1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.button {
+    position: relative;
+    background-color: #8DE4AF;
+    -unity-font-style: bold;
+    font-size: 24px;
+    color: #f8f7f6;
+    padding: 8px;
+    padding-right: 12px;
+    padding-left: 12px;
+    border-radius: 10px;
+    transition: border-width .15s ease-out, translate .15s ease-out;
+}
+
+.button:hover {
+    border-width: 3px;
+    translate: 0px -3px;
+}
+
+.turn-label {
+    -unity-font-style: bold;
+    font-size: 32px;
+    color: #389485;
+}
+
+.player-modes-container {
+    position: relative;
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8f7f6;
+    padding: 16px;
+}

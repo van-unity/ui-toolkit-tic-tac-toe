@@ -1,8 +1,7 @@
 using System;
-using System.Threading.Tasks;
 
 namespace TicTacToe.Editor.Domain {
     public interface IMoveStrategy {
-        Task ExecuteAsync(IPlayer player, BoardModel board = null, BoardPosition? clickPosition = null);
+        void Play(BoardModel board, Action<BoardPosition> callback);
     }
 }

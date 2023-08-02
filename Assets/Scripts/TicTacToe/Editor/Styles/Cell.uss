@@ -4,4 +4,5 @@
     align-items: center;
     justify-content: center;
     -unity-font-style: bold;
+    transition: opacity .15s ease-in-out, scale .2s ease-out;
 }

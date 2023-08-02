@@ -1,10 +1,10 @@
-using TicTacToe.Editor.Utils;
+using TicTacToe.Editor.VisualElementExtensions;
 using UnityEngine.UIElements;
 
 namespace TicTacToe.Editor.Presentation {
     public class Cell : VisualElement {
         public Cell(int symbolSize, string symbol) {
-            StyleHelperMethods.SetStyleFromPath(this, "Cell");
+            this.SetStyleFromPath("Cell");
             this.AddToClassList("cell");
             var label = new Label(symbol) {
                 style = {

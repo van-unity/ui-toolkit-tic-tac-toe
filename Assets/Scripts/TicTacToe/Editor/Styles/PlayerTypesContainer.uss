@@ -1,8 +1,0 @@
-.player-types-container {
-    width: 100%;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    background-color: #f8f7f6;
-    padding: 16px;
-}

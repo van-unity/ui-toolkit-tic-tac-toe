@@ -1,16 +1,23 @@
 using System;
-using System.Threading.Tasks;
 using TicTacToe.Editor.Domain;
 
 namespace TicTacToe.Editor.Application {
     public class ManualMoveStrategy : IMoveStrategy {
-        public Task ExecuteAsync(IPlayer player, BoardModel board, BoardPosition? clickPosition) {
-            if (clickPosition == null) {
-                throw new ArgumentNullException(nameof(clickPosition), "Click position cannot be null.");
+        private readonly IBoardEventsProvider _boardEventsProvider;
+
+        public ManualMoveStrategy(IBoardEventsProvider boardEventsProvider) {
+            _boardEventsProvider = boardEventsProvider;
+        }
+
+        public void Play(BoardModel board, Action<BoardPosition> callback) {
+            void Handler(BoardPosition position) {
+                if (board.IsMoveValid(position)) {
+                    callback?.Invoke(position);
+                    _boardEventsProvider.CellClicked -= Handler;
+                }
             }
 
-            board.UpdateCell(clickPosition.Value, player.Symbol);
-            return Task.CompletedTask;
+            _boardEventsProvider.CellClicked += Handler;
         }
     }
 }

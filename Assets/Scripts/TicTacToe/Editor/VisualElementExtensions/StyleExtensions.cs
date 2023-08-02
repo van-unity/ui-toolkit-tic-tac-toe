@@ -1,13 +1,11 @@
-using System;
 using System.ComponentModel;
-using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace TicTacToe.Editor.Utils {
-    public static class StyleHelperMethods {
-        internal static void SetStyleFromPath(VisualElement element, string stylePath) {
+namespace TicTacToe.Editor.VisualElementExtensions {
+    public static class StyleExtensions {
+        internal static void SetStyleFromPath(this VisualElement element, string stylePath) {
             // If the attribute exists and has a valid file name, search for the stylesheet.
             if (!string.IsNullOrEmpty(stylePath)) {
                 string[] guids = AssetDatabase.FindAssets($"{stylePath} t:StyleSheet");

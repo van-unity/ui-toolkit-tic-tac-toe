@@ -1,13 +1,15 @@
 namespace TicTacToe.Editor.Domain {
-    public class  Win {
+    public readonly struct Win {
         public Symbol Symbol { get; }
-        public BoardPosition Start { get; }
-        public BoardPosition End { get; }
+        public BoardPosition[] Positions { get; }
 
-        public Win(Symbol symbol, BoardPosition start, BoardPosition end) {
+        public bool IsValid() => Symbol != Symbol.Empty && Positions is { Length: > 0 };
+
+        public Win(Symbol symbol, BoardPosition[] positions) {
             Symbol = symbol;
-            Start = start;
-            End = end;
+            Positions = positions;
         }
+
+        public static Win Invalid() => new(Symbol.Empty, null);
     }
 }

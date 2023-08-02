@@ -1,5 +1,5 @@
 namespace TicTacToe.Editor.Domain {
-    public enum PlayerType {
+    public enum PlayerMode {
         Manual = 0,
         Auto = 1
     }

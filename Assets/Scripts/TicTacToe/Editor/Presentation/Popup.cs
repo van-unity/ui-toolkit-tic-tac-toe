@@ -1,10 +1,10 @@
-using TicTacToe.Editor.Utils;
+using TicTacToe.Editor.VisualElementExtensions;
 using UnityEngine.UIElements;
 
 namespace TicTacToe.Editor.Presentation {
     public class Popup : VisualElement {
         public Popup() {
-            StyleHelperMethods.SetStyleFromPath(this, "Popup");
+            this.SetStyleFromPath("Popup");
             this.AddToClassList("popup");
         }
     }
