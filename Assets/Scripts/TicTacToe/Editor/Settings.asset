@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c23b764d9a0433c82662f6c86135d2b, type: 3}
   m_Name: Settings
   m_EditorClassIdentifier: 
+  _boardSize: 4
   _playerXMode: 1
   _playerOMode: 1
-  _boardDrawDelayMS: 1000
+  _boardDrawDelayMS: 2000
