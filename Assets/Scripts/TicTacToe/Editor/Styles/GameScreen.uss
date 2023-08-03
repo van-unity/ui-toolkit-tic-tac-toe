@@ -45,6 +45,7 @@
     -unity-font-style: bold;
     font-size: 32px;
     color: #389485;
+    margin-bottom: 20px;
 }
 
 .player-modes-container {

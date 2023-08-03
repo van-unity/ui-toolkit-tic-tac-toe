@@ -1,5 +1,0 @@
-.popup {
-    background-color: #f8f7f6;
-    opacity: .9;
-    border-radius: 20%;
-}

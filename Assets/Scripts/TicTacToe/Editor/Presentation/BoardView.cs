@@ -1,33 +1,21 @@
 using System.Collections.Generic;
 using TicTacToe.Editor.Domain;
+using TicTacToe.Editor.Presentation.CustomEvents;
 using TicTacToe.Editor.VisualElementExtensions;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace TicTacToe.Editor.Presentation {
-    public class CellClickedEvent : EventBase<CellClickedEvent> {
-        public BoardPosition ClickPosition { get; }
-
-        public CellClickedEvent(BoardPosition clickPosition, IEventHandler target) {
-            ClickPosition = clickPosition;
-            this.target = target;
-        }
-
-        public CellClickedEvent() : this(BoardPosition.Invalid(), null) {
-        }
-    }
-
     public class BoardView : VisualElement {
-        private const float HUNDRED_PIXEL_DURATION = 0.075f;
-        private const EasingMode EASING_MODE = EasingMode.EaseOutSine;
-        private const string STYLE_NAME = "Board";
-        private const int DELTA_TIME = 16;
+        private const float LINE_DURATION_MS = 500;
+        private const EasingMode LINE_EASING_MODE = EasingMode.EaseOutSine;
 
         private readonly VisualElement _gridLinesContainer;
         private readonly VisualElement _cellsContainer;
         private readonly VisualElement _winningLineContainer;
         private readonly int _rows;
         private readonly int _columns;
+        private readonly IStyleSettings _styleSettings;
 
         private float _cellWidth;
         private float _cellHeight;
@@ -35,10 +23,11 @@ namespace TicTacToe.Editor.Presentation {
         //for this game BoardView should be a square
         //so we could have just one _size field.
         //but we are leaving it this way because maybe we just want to throw some grid for another game or another purpose
-        public BoardView(int rows, int columns) {
+        public BoardView(int rows, int columns, IStyleSettings styleSettings) {
             _rows = rows;
             _columns = columns;
-            this.SetStyleFromPath(STYLE_NAME);
+            _styleSettings = styleSettings;
+            this.SetStyleFromPath(_styleSettings.BoardStyle);
             this.AddToClassList("board");
             _gridLinesContainer = new VisualElement();
             _gridLinesContainer.AddToClassList("grid-lines-container");
@@ -60,7 +49,7 @@ namespace TicTacToe.Editor.Presentation {
 
         public void UpdateCell(BoardPosition position, Symbol symbol) {
             var symbolSize = Mathf.CeilToInt(Mathf.Min(_cellWidth, _cellHeight));
-            var element = new Cell(symbolSize, symbol.ToString()) {
+            var element = new Cell(symbolSize, symbol.ToString(), _styleSettings) {
                 style = {
                     width = _cellWidth,
                     height = _cellHeight
@@ -86,7 +75,7 @@ namespace TicTacToe.Editor.Presentation {
                 _cellWidth = layout.width / _columns;
                 _cellHeight = layout.height / _rows;
                 DrawGrid();
-            }).ExecuteLater(DELTA_TIME);
+            }).ExecuteLater(TimeSettings.DELTA_TIME_MS);
         }
 
         private void DrawGrid() {
@@ -116,15 +105,14 @@ namespace TicTacToe.Editor.Presentation {
         private void AnimateLineLength(Line line, float width, int delayMS = 0) {
             line.Length = 0;
             line.schedule.Execute(() => {
-                var durationInSeconds = width / 100 * HUNDRED_PIXEL_DURATION;
                 line.style.transitionProperty =
                     new StyleList<StylePropertyName>(new List<StylePropertyName>() { "width" });
                 line.style.transitionTimingFunction = new StyleList<EasingFunction>(new List<EasingFunction>()
-                    { new(EASING_MODE) });
+                    { new(LINE_EASING_MODE) });
                 line.style.transitionDuration = new StyleList<TimeValue>(new List<TimeValue>()
-                    { new(durationInSeconds, TimeUnit.Second) });
+                    { new(LINE_DURATION_MS, TimeUnit.Millisecond) });
                 line.Length = width;
-            }).ExecuteLater(DELTA_TIME + delayMS);
+            }).ExecuteLater(TimeSettings.DELTA_TIME_MS + delayMS);
         }
 
         public void DrawWinningLine(BoardPosition from, BoardPosition to) {

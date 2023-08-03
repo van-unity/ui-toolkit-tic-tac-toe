@@ -19,11 +19,6 @@ namespace TicTacToe.Editor.Domain {
             CellUpdated?.Invoke(position, symbol);
         }
 
-        public Symbol GetValueAt(int rowIndex, int columnIndex) => _state[rowIndex, columnIndex];
-        public Symbol GetValueAt(BoardPosition position) => _state[position.RowIndex, position.ColumnIndex];
-
-        public bool IsMoveValid(int rowIndex, int columnIndex) => _state[rowIndex, columnIndex] == Symbol.Empty;
-
         public bool IsMoveValid(BoardPosition position) =>
             _state[position.RowIndex, position.ColumnIndex] == Symbol.Empty;
 
@@ -147,7 +142,7 @@ namespace TicTacToe.Editor.Domain {
         }
 
         public void Reset() {
-            _state = _state = new Symbol[_size, _size];
+            _state = new Symbol[_size, _size];
         }
     }
 }

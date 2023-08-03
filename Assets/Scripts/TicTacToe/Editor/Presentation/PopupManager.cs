@@ -1,27 +1,39 @@
-using TicTacToe.Editor.Application;
+using System.Threading.Tasks;
 using TicTacToe.Editor.Domain;
 using UnityEngine.UIElements;
 
 namespace TicTacToe.Editor.Presentation {
-    public class PopupManager {
+    public class PopupManager : IPopupManager {
+        private readonly IStyleSettings _styleSettings;
         public VisualElement Container { get; }
 
-        public PopupManager(VisualElement container) {
+        public PopupManager(VisualElement container, IStyleSettings styleSettings) {
+            _styleSettings = styleSettings;
             Container = container;
             container.visible = false;
         }
 
-        public void ShowWinPopup(IGameController gameController, Win win) {
+        public async Task ShowWinPopupAsync(IGameController gameController, Symbol winSymbol) {
             Container.visible = true;
-            var winPopup = new WinPopup();
-            var popupController = new WinPopupController(winPopup, gameController, win, this);
-            Container.Add(winPopup);
-            winPopup.Show();
+            var popup = new MessageboxPopup(_styleSettings);
+            var popupController = new WinPopupController(popup, gameController, winSymbol, this);
+            Container.Add(popup);
+            await popup.ShowAsync();
         }
 
-        public void HidePopup(VisualElement popup) {
-            popup.Clear();
-            Container.Remove(popup);
+        public async Task ShowDrawPopupAsync(IGameController gameController) {
+            Container.visible = true;
+            var popup = new MessageboxPopup(_styleSettings);
+            var popupController = new DrawPopupController(popup, this, gameController);
+            Container.Add(popup);
+            await popup.ShowAsync();
+        }
+
+        public async void HidePopupAsync(IPopup popup) {
+            await popup.HideAsync();
+            var visualElement = popup as VisualElement;
+            visualElement.Clear();
+            Container.Remove(visualElement);
             Container.visible = false;
         }
     }

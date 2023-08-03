@@ -3,8 +3,8 @@ using UnityEngine.UIElements;
 
 namespace TicTacToe.Editor.Presentation {
     public class Cell : VisualElement {
-        public Cell(int symbolSize, string symbol) {
-            this.SetStyleFromPath("Cell");
+        public Cell(int symbolSize, string symbol, IStyleSettings styleSettings) {
+            this.SetStyleFromPath(styleSettings.CellStyle);
             this.AddToClassList("cell");
             var label = new Label(symbol) {
                 style = {

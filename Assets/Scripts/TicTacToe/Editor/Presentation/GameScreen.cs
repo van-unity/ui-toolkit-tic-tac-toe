@@ -1,39 +1,9 @@
 using TicTacToe.Editor.Domain;
+using TicTacToe.Editor.Presentation.CustomEvents;
 using TicTacToe.Editor.VisualElementExtensions;
 using UnityEngine.UIElements;
 
 namespace TicTacToe.Editor.Presentation {
-    public class StartButtonClickEvent : EventBase<StartButtonClickEvent> {
-        public StartButtonClickEvent(IEventHandler target) {
-            this.target = target;
-        }
-
-        public StartButtonClickEvent() {
-        }
-    }
-
-    public class RestartButtonClicked : EventBase<RestartButtonClicked> {
-        public RestartButtonClicked(IEventHandler target) {
-            this.target = target;
-        }
-
-        public RestartButtonClicked() {
-        }
-    }
-
-    public class PlayerModeClickedEvent : EventBase<PlayerModeClickedEvent> {
-        public Symbol Symbol { get; }
-
-        public PlayerModeClickedEvent(Symbol symbol, IEventHandler target) {
-            Symbol = symbol;
-            this.target = target;
-        }
-
-        public PlayerModeClickedEvent() {
-            Symbol = Symbol.Empty;
-        }
-    }
-
     public class GameScreen : VisualElement {
         private readonly Button _startButton;
         private readonly Button _restartButton;
@@ -43,8 +13,8 @@ namespace TicTacToe.Editor.Presentation {
         private readonly PlayerModeElement _playerXMode;
         private readonly PlayerModeElement _playerOMode;
 
-        public GameScreen(BoardView boardView) {
-            this.SetStyleFromPath("GameScreen");
+        public GameScreen(BoardView boardView, IStyleSettings styleSettings) {
+            this.SetStyleFromPath(styleSettings.GameScreenStyle);
             this.AddToClassList("game-screen");
 
             _boardView = boardView;
@@ -67,10 +37,10 @@ namespace TicTacToe.Editor.Presentation {
             var playerModesContainer = new VisualElement();
             playerModesContainer.AddToClassList("player-modes-container");
 
-            _playerXMode = new PlayerModeElement();
+            _playerXMode = new PlayerModeElement(styleSettings);
             _playerXMode.SetSymbol(Symbol.X.ToString());
 
-            _playerOMode = new PlayerModeElement();
+            _playerOMode = new PlayerModeElement(styleSettings);
             _playerOMode.SetSymbol(Symbol.O.ToString());
 
             _playerXMode.RegisterCallback<ClickEvent>(OnPlayerXTypeClicked);

@@ -9,6 +9,8 @@ using UnityEngine.UIElements;
 
 namespace TicTacToe.Editor {
     public class TicTacToeWindow : EditorWindow {
+        private IGameSettings _gameSettings;
+        private IStyleSettings _styleSettings;
         private BoardModel _board;
         private IPlayer _playerX;
         private IPlayer _playerO;
@@ -16,27 +18,25 @@ namespace TicTacToe.Editor {
         private IGameEventsProvider _gameEvents;
         private IBoardEventsHandler _boardEventsHandler;
         private IBoardEventsProvider _boardEventsProvider;
-        private IGameSettings _gameSettings;
         private IMoveStrategy _manualMoveStrategy;
         private IMoveStrategy _automatedMoveStrategy;
         private PopupManager _popupManager;
 
 
         private void OnEnable() {
-            LoadSettings();
+            LoadGameSettings();
+            LoadStyleSettings();
             _board = new BoardModel(_gameSettings.BoardSize);
             var boardEventsManager = new BoardEventsManager();
             _boardEventsProvider = boardEventsManager;
             _boardEventsHandler = boardEventsManager;
             _manualMoveStrategy = new ManualMoveStrategy(_boardEventsProvider);
-            _automatedMoveStrategy = new EaseAutomatedMoveStrategy();
+            _automatedMoveStrategy = new EaseAutomatedMoveStrategy(1000);
             CreatePlayerO();
             CreatePlayerX();
 
-            var popupsContainer = new VisualElement();
-            popupsContainer.SetStyleFromPath("PopupsContainer");
-            popupsContainer.AddToClassList("popups-container");
-            _popupManager = new PopupManager(popupsContainer);
+            var popupsContainer = new PopupsContainer(_styleSettings);
+            _popupManager = new PopupManager(popupsContainer, _styleSettings);
 
             var gameController = new GameController(_playerX, _playerO, _board, _gameSettings, _manualMoveStrategy,
                 _automatedMoveStrategy, _popupManager);
@@ -45,7 +45,7 @@ namespace TicTacToe.Editor {
             rootVisualElement.RegisterCallback<GeometryChangedEvent>(evt => evt.PreventDefault());
         }
 
-        private void LoadSettings() {
+        private void LoadGameSettings() {
             var guids = AssetDatabase.FindAssets($"t:{typeof(GameSettings)}");
             switch (guids.Length) {
                 case > 1:
@@ -57,6 +57,20 @@ namespace TicTacToe.Editor {
 
             var path = AssetDatabase.GUIDToAssetPath(guids[0]);
             _gameSettings = AssetDatabase.LoadAssetAtPath<GameSettings>(path);
+        }
+
+        private void LoadStyleSettings() {
+            var guids = AssetDatabase.FindAssets($"t:{typeof(StyleSettings)}");
+            switch (guids.Length) {
+                case > 1:
+                    Debug.LogWarning("Multiple GameSettings found!");
+                    break;
+                case 0:
+                    throw new NullReferenceException("Unable to find GameSettings!");
+            }
+
+            var path = AssetDatabase.GUIDToAssetPath(guids[0]);
+            _styleSettings = AssetDatabase.LoadAssetAtPath<StyleSettings>(path);
         }
 
         private void CreatePlayerO() {
@@ -87,11 +101,11 @@ namespace TicTacToe.Editor {
         }
 
         private void CreateGUI() {
-            var boardView = new BoardView(_gameSettings.BoardSize, _gameSettings.BoardSize);
+            var boardView = new BoardView(_gameSettings.BoardSize, _gameSettings.BoardSize, _styleSettings);
             var boardViewController = new BoardViewController(boardView, _board,
                 _boardEventsHandler, _gameEvents);
 
-            var gameScreen = new GameScreen(boardView);
+            var gameScreen = new GameScreen(boardView, _styleSettings);
             var gameScreenController = new GameScreenController(gameScreen, _gameEvents,
                 _gameController, _gameSettings);
 

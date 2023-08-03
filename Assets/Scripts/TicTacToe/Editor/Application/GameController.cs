@@ -11,8 +11,8 @@ namespace TicTacToe.Editor.Application {
         private readonly IGameSettings _gameSettings;
         private readonly IMoveStrategy _manualMoveStrategy;
         private readonly IMoveStrategy _automatedMoveStrategy;
-        private readonly PopupManager _popupManager;
-        
+        private readonly IPopupManager _popupManager;
+
         private Symbol _currentPlayer;
         public bool IsGameStarted { get; private set; }
 
@@ -24,7 +24,7 @@ namespace TicTacToe.Editor.Application {
         public event Action BeforeRestart;
 
         public GameController(IPlayer playerX, IPlayer playerO, BoardModel boardModel, IGameSettings gameSettings,
-            IMoveStrategy manualMoveStrategy, IMoveStrategy automatedMoveStrategy, PopupManager popupManager) {
+            IMoveStrategy manualMoveStrategy, IMoveStrategy automatedMoveStrategy, IPopupManager popupManager) {
             _playersLookup = new Dictionary<Symbol, IPlayer>() {
                 { Symbol.X, playerX },
                 { Symbol.O, playerO }
@@ -42,24 +42,30 @@ namespace TicTacToe.Editor.Application {
             if (_board.HasWinner(out var win)) {
                 GameWon?.Invoke(win);
                 IsGameStarted = false;
-                WaitAndShowWinPopup(win);
+                WaitAndShowWinPopup(win.Symbol);
                 return;
             }
 
             if (_board.IsFull()) {
                 GameDraw?.Invoke();
                 IsGameStarted = false;
+                WaitAndShowDrawPopup();
                 return;
             }
 
             _playersLookup[_currentPlayer].MakeMove(_board, OnPlayerMoved);
         }
 
-        private async void WaitAndShowWinPopup(Win win) {
-            await Task.Delay(1000);
-            _popupManager.ShowWinPopup(this, win);
+        private async void WaitAndShowWinPopup(Symbol winSymbol) {
+            await Task.Delay(750);
+            await _popupManager.ShowWinPopupAsync(this, winSymbol);
         }
-        
+
+        private async void WaitAndShowDrawPopup() {
+            await Task.Delay(750);
+            await _popupManager.ShowDrawPopupAsync(this);
+        }
+
         public void Start() {
             _currentPlayer = Symbol.X;
             IsGameStarted = true;
@@ -72,7 +78,6 @@ namespace TicTacToe.Editor.Application {
             BeforeRestart?.Invoke();
             _board.Reset();
             Start();
-            
         }
 
         public void TogglePlayerMode(Symbol playerSymbol) {

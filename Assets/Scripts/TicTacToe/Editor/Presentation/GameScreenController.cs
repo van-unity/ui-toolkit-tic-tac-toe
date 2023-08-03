@@ -1,9 +1,9 @@
 using System.Threading.Tasks;
 using TicTacToe.Editor.Domain;
-using TicTacToe.Editor.Presentation;
+using TicTacToe.Editor.Presentation.CustomEvents;
 using UnityEngine.UIElements;
 
-namespace TicTacToe.Editor.Application {
+namespace TicTacToe.Editor.Presentation {
     public class GameScreenController {
         private const string TURN_TEXT_FORMAT = "{0} Turn";
         private const string PLAYER_TYPE_FORMAT = "{0}";
@@ -44,8 +44,6 @@ namespace TicTacToe.Editor.Application {
         private void SubscribeOnGameEvents() {
             _gameEvents.GameStarted += OnGameStarted;
             _gameEvents.TurnChanged += OnTurnChanged;
-            _gameEvents.GameWon += OnGameWon;
-            _gameEvents.GameDraw += OnGameDraw;
             _gameEvents.PlayerModeChanged += OnPlayerModeChanged;
             _gameEvents.BeforeRestart += OnBeforeRestart;
         }
@@ -70,12 +68,6 @@ namespace TicTacToe.Editor.Application {
             _view.SetPlayerOMode(string.Format(PLAYER_TYPE_FORMAT, playerMode));
         }
 
-        private void OnGameDraw() {
-        }
-
-        private void OnGameWon(Win obj) {
-        }
-
         private async void WaitAndDrawTheBoard() {
             await Task.Delay(_gameSettings.BoardDrawDelayMS);
             _view.InitializeBoard();
@@ -92,13 +84,16 @@ namespace TicTacToe.Editor.Application {
 
         private void ViewClosed(DetachFromPanelEvent evt) {
             UnsubscribeFromGameEvents();
+            _view.UnregisterCallback<AttachToPanelEvent>(ViewOpened);
+            _view.UnregisterCallback<DetachFromPanelEvent>(ViewClosed);
+            _view.UnregisterCallback<StartButtonClickEvent>(OnStartButtonClick);
+            _view.UnregisterCallback<RestartButtonClicked>(OnRestartButtonClick);
+            _view.UnregisterCallback<PlayerModeClickedEvent>(OnPlayerModeClicked);
         }
 
         private void UnsubscribeFromGameEvents() {
             _gameEvents.TurnChanged -= OnTurnChanged;
             _gameEvents.GameStarted -= OnGameStarted;
-            _gameEvents.GameWon -= OnGameWon;
-            _gameEvents.GameDraw -= OnGameDraw;
             _gameEvents.PlayerModeChanged -= OnPlayerModeChanged;
             _gameEvents.BeforeRestart -= OnBeforeRestart;
         }

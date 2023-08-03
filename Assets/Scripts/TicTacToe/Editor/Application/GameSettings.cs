@@ -2,7 +2,7 @@ using TicTacToe.Editor.Domain;
 using UnityEngine;
 
 namespace TicTacToe.Editor.Application {
-    [CreateAssetMenu(menuName = "TiTacToe/Settings", fileName = "Settings")]
+    [CreateAssetMenu(menuName = "TicTacToe/GameSettings", fileName = "GameSettings")]
     public sealed class GameSettings : ScriptableObject, IGameSettings {
         [SerializeField] private int _boardSize = 3;
         [SerializeField] private PlayerMode _playerXMode = PlayerMode.Manual;
