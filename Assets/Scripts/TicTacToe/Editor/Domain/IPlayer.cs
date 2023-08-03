@@ -8,6 +8,6 @@ namespace TicTacToe.Editor.Domain {
         void SetMode(PlayerMode mode);
         void SetStrategy(IMoveStrategy strategy);
 
-        public void MakeMove(BoardModel model, Action<BoardPosition> callback = null);
+        public void MakeMove(Board model, Action<BoardPosition> callback = null);
     }
 }

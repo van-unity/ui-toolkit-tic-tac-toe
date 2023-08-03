@@ -10,7 +10,7 @@ namespace TicTacToe.Editor.Application {
             _delayMS = delayMS;
         }
         
-        public async void Play(BoardModel board, Action<BoardPosition> callback) {
+        public async void Play(Board board, Action<BoardPosition> callback) {
             await Task.Delay(_delayMS);
             var emptyCells = board.GetEmptyCells();
             if (emptyCells.Count <= 0) {

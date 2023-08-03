@@ -7,7 +7,7 @@ using TicTacToe.Editor.Presentation;
 namespace TicTacToe.Editor.Application {
     public class GameController : IGameController, IGameEventsProvider, IDisposable {
         private readonly Dictionary<Symbol, IPlayer> _playersLookup;
-        private readonly BoardModel _board;
+        private readonly Board _board;
         private readonly IGameSettings _gameSettings;
         private readonly IMoveStrategy _manualMoveStrategy;
         private readonly IMoveStrategy _automatedMoveStrategy;
@@ -23,13 +23,13 @@ namespace TicTacToe.Editor.Application {
         public event Action<Symbol, PlayerMode> PlayerModeChanged;
         public event Action BeforeRestart;
 
-        public GameController(IPlayer playerX, IPlayer playerO, BoardModel boardModel, IGameSettings gameSettings,
+        public GameController(IPlayer playerX, IPlayer playerO, Board board, IGameSettings gameSettings,
             IMoveStrategy manualMoveStrategy, IMoveStrategy automatedMoveStrategy, IPopupManager popupManager) {
             _playersLookup = new Dictionary<Symbol, IPlayer>() {
                 { Symbol.X, playerX },
                 { Symbol.O, playerO }
             };
-            _board = boardModel;
+            _board = board;
             _gameSettings = gameSettings;
             _manualMoveStrategy = manualMoveStrategy;
             _automatedMoveStrategy = automatedMoveStrategy;

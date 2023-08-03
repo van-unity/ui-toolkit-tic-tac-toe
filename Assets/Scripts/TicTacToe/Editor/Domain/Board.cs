@@ -2,13 +2,13 @@ using System;
 using System.Collections.Generic;
 
 namespace TicTacToe.Editor.Domain {
-    public class BoardModel {
+    public class Board {
         private readonly int _size;
         private Symbol[,] _state;
 
         public event Action<BoardPosition, Symbol> CellUpdated;
 
-        public BoardModel(int size) {
+        public Board(int size) {
             _size = size;
             _state = new Symbol[_size, _size];
         }

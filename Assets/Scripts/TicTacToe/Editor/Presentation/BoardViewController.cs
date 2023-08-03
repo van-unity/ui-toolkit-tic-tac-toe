@@ -5,14 +5,14 @@ using UnityEngine.UIElements;
 namespace TicTacToe.Editor.Presentation {
     public class BoardViewController {
         private readonly BoardView _view;
-        private readonly BoardModel _boardModel;
+        private readonly Board _board;
         private readonly IBoardEventsHandler _boardEventsHandler;
         private readonly IGameEventsProvider _gameEvents;
 
-        public BoardViewController(BoardView view, BoardModel boardModel, IBoardEventsHandler boardEventsHandler,
+        public BoardViewController(BoardView view, Board board, IBoardEventsHandler boardEventsHandler,
             IGameEventsProvider gameEvents) {
             _view = view;
-            _boardModel = boardModel;
+            _board = board;
             _boardEventsHandler = boardEventsHandler;
             _gameEvents = gameEvents;
 
@@ -22,7 +22,7 @@ namespace TicTacToe.Editor.Presentation {
         }
 
         private void ViewOpened(AttachToPanelEvent evt) {
-            _boardModel.CellUpdated += OnCellUpdated;
+            _board.CellUpdated += OnCellUpdated;
             _gameEvents.GameWon += OnGameWon;
         }
 
@@ -41,7 +41,7 @@ namespace TicTacToe.Editor.Presentation {
         }
 
         private void ViewClosed(DetachFromPanelEvent evt) {
-            _boardModel.CellUpdated -= OnCellUpdated;
+            _board.CellUpdated -= OnCellUpdated;
             _gameEvents.GameWon -= OnGameWon;
             _view.UnregisterCallback<DetachFromPanelEvent>(ViewClosed);
             _view.UnregisterCallback<AttachToPanelEvent>(ViewOpened);

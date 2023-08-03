@@ -22,8 +22,8 @@ namespace TicTacToe.Editor.Application {
             _moveStrategy = strategy;
         }
         
-        public void MakeMove(BoardModel boardModel, Action<BoardPosition> callback) {
-            _moveStrategy.Play(boardModel, callback);
+        public void MakeMove(Board board, Action<BoardPosition> callback) {
+            _moveStrategy.Play(board, callback);
         }
     }
 }

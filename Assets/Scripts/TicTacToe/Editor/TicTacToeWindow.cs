@@ -9,7 +9,7 @@ namespace TicTacToe.Editor {
     public class TicTacToeWindow : EditorWindow {
         private IGameSettings _gameSettings;
         private IStyleSettings _styleSettings;
-        private BoardModel _board;
+        private Board _board;
         private IPlayer _playerX;
         private IPlayer _playerO;
         private IGameController _gameController;
@@ -23,7 +23,7 @@ namespace TicTacToe.Editor {
         private void OnEnable() {
             LoadGameSettings();
             LoadStyleSettings();
-            _board = new BoardModel(_gameSettings.BoardSize);
+            _board = new Board(_gameSettings.BoardSize);
             var boardEventsManager = new BoardEventsManager();
             _boardEventsProvider = boardEventsManager;
             _boardEventsHandler = boardEventsManager;
