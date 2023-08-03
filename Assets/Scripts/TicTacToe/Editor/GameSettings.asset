@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c23b764d9a0433c82662f6c86135d2b, type: 3}
   m_Name: GameSettings
   m_EditorClassIdentifier: 
+  _boardDimensions: {x: 640, y: 1080}
   _boardSize: 3
   _playerXMode: 0
   _playerOMode: 1

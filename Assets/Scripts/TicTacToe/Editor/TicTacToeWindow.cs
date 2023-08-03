@@ -28,7 +28,7 @@ namespace TicTacToe.Editor {
             _boardEventsProvider = boardEventsManager;
             _boardEventsHandler = boardEventsManager;
             _manualMoveStrategy = new ManualMoveStrategy(_boardEventsProvider);
-            _automatedMoveStrategy = new EaseAutomatedMoveStrategy(1000);
+            _automatedMoveStrategy = new DelayedRandomMoveStrategy(1000);
             CreatePlayerO();
             CreatePlayerX();
 

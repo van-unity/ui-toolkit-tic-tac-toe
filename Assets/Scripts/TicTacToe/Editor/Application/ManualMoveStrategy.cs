@@ -9,7 +9,7 @@ namespace TicTacToe.Editor.Application {
             _boardEventsProvider = boardEventsProvider;
         }
 
-        public void Play(Board board, Action<BoardPosition> callback) {
+        public void Move(Board board, Action<BoardPosition> callback) {
             void Handler(BoardPosition position) {
                 if (board.IsMoveValid(position)) {
                     callback?.Invoke(position);

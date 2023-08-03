@@ -23,7 +23,7 @@ namespace TicTacToe.Editor.Application {
         }
         
         public void MakeMove(Board board, Action<BoardPosition> callback) {
-            _moveStrategy.Play(board, callback);
+            _moveStrategy.Move(board, callback);
         }
     }
 }

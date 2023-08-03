@@ -35,7 +35,7 @@ namespace TicTacToe.Editor.Presentation {
         }
 
         private void OnGameWon(Win win) {
-            if (win.IsValid()) {
+            if (win.IsValid) {
                 _view.DrawWinningLine(win.Positions[0], win.Positions[^1]);
             }
         }

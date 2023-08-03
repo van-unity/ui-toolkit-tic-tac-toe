@@ -10,7 +10,7 @@ namespace TicTacToe.Editor.Presentation.CustomEvents {
             this.target = target;
         }
 
-        public CellClickedEvent() : this(BoardPosition.Invalid(), null) {
+        public CellClickedEvent() : this(BoardPosition.Invalid, null) {
         }
     }
 }

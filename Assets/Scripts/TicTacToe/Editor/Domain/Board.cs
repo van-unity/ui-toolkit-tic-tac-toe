@@ -4,141 +4,110 @@ using System.Collections.Generic;
 namespace TicTacToe.Editor.Domain {
     public class Board {
         private readonly int _size;
-        private Symbol[,] _state;
+        private readonly Symbol[,] _state;
+        private readonly List<BoardPosition> _emptyCells;
 
+        public IReadOnlyList<BoardPosition> EmptyCells => _emptyCells;
+        public bool IsFull => _emptyCells.Count == 0;
         public event Action<BoardPosition, Symbol> CellUpdated;
 
         public Board(int size) {
             _size = size;
             _state = new Symbol[_size, _size];
+            _emptyCells = new List<BoardPosition>(_size * _size);
+            InitializeEmptyCellsList();
+        }
+
+        private void InitializeEmptyCellsList() {
+            for (int rowIndex = 0; rowIndex < _size; rowIndex++) {
+                for (int columnIndex = 0; columnIndex < _size; columnIndex++) {
+                    _emptyCells.Add(new BoardPosition(rowIndex, columnIndex));
+                }
+            }
         }
 
         public void UpdateCell(BoardPosition position, Symbol symbol) {
             _state[position.RowIndex, position.ColumnIndex] = symbol;
 
+            if (symbol != Symbol.Empty) {
+                _emptyCells.Remove(position);
+            }
+
             CellUpdated?.Invoke(position, symbol);
         }
 
-        public bool IsMoveValid(BoardPosition position) =>
-            _state[position.RowIndex, position.ColumnIndex] == Symbol.Empty;
+        public bool IsMoveValid(BoardPosition movePosition) => IsPositionValid(movePosition) &&
+                                                               _state[movePosition.RowIndex,
+                                                                   movePosition.ColumnIndex] == Symbol.Empty;
 
-        public bool IsFull() {
-            for (int rowIndex = 0; rowIndex < _size; rowIndex++) {
-                for (int columnIndex = 0; columnIndex < _size; columnIndex++) {
-                    if (_state[rowIndex, columnIndex] == Symbol.Empty) {
-                        // Found an empty spot, so the board is not full
-                        return false;
-                    }
-                }
-            }
+        public bool IsPositionValid(BoardPosition position) =>
+            position.IsValid && position.RowIndex < _size && position.ColumnIndex < _size;
 
-            // No empty spots were found, so the board is full
-            return true;
-        }
 
         public bool HasWinner(out Win win) {
-            var winningPositions = new BoardPosition[_size];
-            Symbol winnerSymbol;
-            int currentPositionIndex;
-
             //check rows
             for (int rowIndex = 0; rowIndex < _size; rowIndex++) {
-                currentPositionIndex = 0;
-                winnerSymbol = _state[rowIndex, 0];
-                if (winnerSymbol == Symbol.Empty) {
-                    continue;
-                }
-
-                winningPositions[currentPositionIndex++] = new BoardPosition(rowIndex, 0);
-                for (int columnIndex = 1; columnIndex < _size; columnIndex++) {
-                    if (_state[rowIndex, columnIndex] == winnerSymbol) {
-                        winningPositions[currentPositionIndex++] = new BoardPosition(rowIndex, columnIndex);
-                    }
-                }
-
-                if (currentPositionIndex == _size) {
-                    win = new Win(winnerSymbol, winningPositions);
+                if (CheckLine(rowIndex, 0, (r, c) => new BoardPosition(r, c + 1), out win)) {
                     return true;
                 }
             }
 
             //check columns
             for (int columnIndex = 0; columnIndex < _size; columnIndex++) {
-                currentPositionIndex = 0;
-                winnerSymbol = _state[0, columnIndex];
-                if (winnerSymbol == Symbol.Empty) {
-                    continue;
-                }
-
-                winningPositions[currentPositionIndex++] = new BoardPosition(0, columnIndex);
-                for (int rowIndex = 1; rowIndex < _size; rowIndex++) {
-                    if (_state[rowIndex, columnIndex] == winnerSymbol) {
-                        winningPositions[currentPositionIndex++] = new BoardPosition(rowIndex, columnIndex);
-                    }
-                }
-
-                if (currentPositionIndex == _size) {
-                    win = new Win(winnerSymbol, winningPositions);
+                if (CheckLine(0, columnIndex, (r, c) => new BoardPosition(r + 1, c), out win)) {
                     return true;
                 }
             }
 
-            currentPositionIndex = 0;
-
-            //check diagonals
-            winnerSymbol = _state[0, 0];
-            if (winnerSymbol != Symbol.Empty) {
-                winningPositions[currentPositionIndex++] = new BoardPosition(0, 0);
-                for (int index = 1; index < _size; index++) {
-                    if (_state[index, index] == winnerSymbol) {
-                        winningPositions[currentPositionIndex++] = new BoardPosition(index, index);
-                    }
-                }
-
-                if (currentPositionIndex == _size) {
-                    win = new Win(winnerSymbol, winningPositions);
-                    return true;
-                }
+            //check diagonal from [0, 0]
+            if (CheckLine(0, 0, (r, c) => new BoardPosition(r + 1, c + 1), out win)) {
+                return true;
             }
 
-            currentPositionIndex = 0;
-            winnerSymbol = _state[0, _size - 1];
-            if (winnerSymbol != Symbol.Empty) {
-                winningPositions[currentPositionIndex++] = new BoardPosition(0, _size - 1);
-                for (int i = 1; i < _size; i++) {
-                    var rowIndex = i;
-                    var columnIndex = _size - 1 - i;
-                    if (_state[rowIndex, columnIndex] == winnerSymbol) {
-                        winningPositions[currentPositionIndex++] = new BoardPosition(rowIndex, columnIndex);
-                    }
-                }
-
-                if (currentPositionIndex == _size) {
-                    win = new Win(winnerSymbol, winningPositions);
-                    return true;
-                }
+            //check diagonal from [size - 1, 0]
+            if (CheckLine(_size - 1, 0, (r, c) => new BoardPosition(r - 1, c + 1), out win)) {
+                return true;
             }
 
-            win = Win.Invalid();
+            win = Win.Invalid;
             return false;
         }
 
-
-        public List<BoardPosition> GetEmptyCells() {
-            var emptyCells = new List<BoardPosition>();
-            for (int rowIndex = 0; rowIndex < _size; rowIndex++) {
-                for (int columnIndex = 0; columnIndex < _size; columnIndex++) {
-                    if (_state[rowIndex, columnIndex] == Symbol.Empty) {
-                        emptyCells.Add(new BoardPosition(rowIndex, columnIndex));
-                    }
-                }
+        private bool CheckLine(int startRow, int startColumn, Func<int, int, BoardPosition> getNext, out Win win) {
+            var winningPositions = new BoardPosition[_size];
+            var winningSymbol = _state[startRow, startColumn];
+            if (winningSymbol == Symbol.Empty) {
+                win = Win.Invalid;
+                return false;
             }
 
-            return emptyCells;
+            var positionIndex = 0;
+            winningPositions[positionIndex] = new BoardPosition(startRow, startColumn);
+
+            var nextPosition = getNext(startRow, startColumn);
+            while (IsPositionValid(nextPosition)) {
+                if (_state[nextPosition.RowIndex, nextPosition.ColumnIndex] != winningSymbol) {
+                    win = Win.Invalid;
+                    return false;
+                }
+
+                winningPositions[++positionIndex] = nextPosition;
+                nextPosition = getNext(nextPosition.RowIndex, nextPosition.ColumnIndex);
+            }
+
+            win = new Win(winningSymbol, winningPositions);
+            return true;
         }
 
         public void Reset() {
-            _state = new Symbol[_size, _size];
+            for (int rowIndex = 0; rowIndex < _size; rowIndex++) {
+                for (int columnIndex = 0; columnIndex < _size; columnIndex++) {
+                    _state[rowIndex, columnIndex] = Symbol.Empty;
+                }
+            }
+
+            _emptyCells.Clear();
+            InitializeEmptyCellsList();
         }
     }
 }

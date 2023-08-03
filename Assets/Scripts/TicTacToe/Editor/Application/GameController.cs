@@ -5,8 +5,8 @@ using TicTacToe.Editor.Domain;
 using TicTacToe.Editor.Presentation;
 
 namespace TicTacToe.Editor.Application {
-    public class GameController : IGameController, IGameEventsProvider, IDisposable {
-        private readonly Dictionary<Symbol, IPlayer> _playersLookup;
+    public class GameController : IGameController, IGameEventsProvider {
+        private readonly Dictionary<Symbol, IPlayer> _playerBySymbol;
         private readonly Board _board;
         private readonly IGameSettings _gameSettings;
         private readonly IMoveStrategy _manualMoveStrategy;
@@ -25,7 +25,7 @@ namespace TicTacToe.Editor.Application {
 
         public GameController(IPlayer playerX, IPlayer playerO, Board board, IGameSettings gameSettings,
             IMoveStrategy manualMoveStrategy, IMoveStrategy automatedMoveStrategy, IPopupManager popupManager) {
-            _playersLookup = new Dictionary<Symbol, IPlayer>() {
+            _playerBySymbol = new Dictionary<Symbol, IPlayer> {
                 { Symbol.X, playerX },
                 { Symbol.O, playerO }
             };
@@ -46,14 +46,14 @@ namespace TicTacToe.Editor.Application {
                 return;
             }
 
-            if (_board.IsFull()) {
+            if (_board.IsFull) {
                 GameDraw?.Invoke();
                 IsGameStarted = false;
                 WaitAndShowDrawPopup();
                 return;
             }
 
-            _playersLookup[_currentPlayer].MakeMove(_board, OnPlayerMoved);
+            _playerBySymbol[_currentPlayer].MakeMove(_board, OnPlayerMoved);
         }
 
         private async void WaitAndShowWinPopup(Symbol winSymbol) {
@@ -71,7 +71,7 @@ namespace TicTacToe.Editor.Application {
             IsGameStarted = true;
             GameStarted?.Invoke();
             TurnChanged?.Invoke(_currentPlayer);
-            _playersLookup[_currentPlayer].MakeMove(_board, OnPlayerMoved);
+            _playerBySymbol[_currentPlayer].MakeMove(_board, OnPlayerMoved);
         }
 
         public void Restart() {
@@ -85,22 +85,21 @@ namespace TicTacToe.Editor.Application {
                 return;
             }
 
-            var player = _playersLookup[playerSymbol];
-            var newMode = player.PlayerMode == PlayerMode.Auto ? PlayerMode.Manual : PlayerMode.Auto;
-            switch (newMode) {
-                case PlayerMode.Manual:
-                    player.SetMode(PlayerMode.Manual);
-                    player.SetStrategy(_manualMoveStrategy);
-                    break;
-                case PlayerMode.Auto:
-                    player.SetMode(PlayerMode.Auto);
-                    player.SetStrategy(_automatedMoveStrategy);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            var player = _playerBySymbol[playerSymbol];
 
-            switch (playerSymbol) {
+            var (newMode, newStrategy) = player.PlayerMode == PlayerMode.Auto
+                ? (PlayerMode.Manual, _manualMoveStrategy)
+                : (PlayerMode.Auto, _automatedMoveStrategy);
+            player.SetMode(newMode);
+            player.SetStrategy(newStrategy);
+
+            PlayerModeChanged?.Invoke(playerSymbol, newMode);
+
+            UpdatePlayerModeSettings(playerSymbol, newMode);
+        }
+
+        private void UpdatePlayerModeSettings(Symbol symbol, PlayerMode newMode) {
+            switch (symbol) {
                 case Symbol.X:
                     _gameSettings.SetPlayerXMode(newMode);
                     break;
@@ -108,12 +107,10 @@ namespace TicTacToe.Editor.Application {
                     _gameSettings.SetPlayerOMode(newMode);
                     break;
             }
-
-            PlayerModeChanged?.Invoke(playerSymbol, newMode);
         }
 
         private void OnPlayerMoved(BoardPosition position) {
-            if (!_board.IsMoveValid(position)) {
+            if (!_board.IsPositionValid(position)) {
                 return;
             }
 
@@ -124,13 +121,10 @@ namespace TicTacToe.Editor.Application {
                 Symbol.X => Symbol.O,
                 _ => throw new ArgumentOutOfRangeException()
             };
+
             TurnChanged?.Invoke(_currentPlayer);
 
             _board.UpdateCell(position, current);
-        }
-
-        public void Dispose() {
-            _board.CellUpdated -= BoardOnCellUpdated;
         }
     }
 }
