@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace TicTacToe.Editor.Domain {
     public class BoardModel {
         private readonly int _size;
-        private  Symbol[,] _state;
+        private Symbol[,] _state;
 
         public event Action<BoardPosition, Symbol> CellUpdated;
 
@@ -39,13 +39,14 @@ namespace TicTacToe.Editor.Domain {
         public bool HasWinner(out Win win) {
             var winningPositions = new BoardPosition[_size];
             Symbol winnerSymbol;
-            var currentPositionIndex = 0;
+            int currentPositionIndex;
 
             //check rows
             for (int rowIndex = 0; rowIndex < _size; rowIndex++) {
+                currentPositionIndex = 0;
                 winnerSymbol = _state[rowIndex, 0];
                 if (winnerSymbol == Symbol.Empty) {
-                    break;
+                    continue;
                 }
 
                 winningPositions[currentPositionIndex++] = new BoardPosition(rowIndex, 0);
@@ -59,17 +60,14 @@ namespace TicTacToe.Editor.Domain {
                     win = new Win(winnerSymbol, winningPositions);
                     return true;
                 }
-
-                currentPositionIndex = 0;
             }
-
-            currentPositionIndex = 0;
 
             //check columns
             for (int columnIndex = 0; columnIndex < _size; columnIndex++) {
+                currentPositionIndex = 0;
                 winnerSymbol = _state[0, columnIndex];
                 if (winnerSymbol == Symbol.Empty) {
-                    break;
+                    continue;
                 }
 
                 winningPositions[currentPositionIndex++] = new BoardPosition(0, columnIndex);
@@ -83,8 +81,6 @@ namespace TicTacToe.Editor.Domain {
                     win = new Win(winnerSymbol, winningPositions);
                     return true;
                 }
-
-                currentPositionIndex = 0;
             }
 
             currentPositionIndex = 0;
