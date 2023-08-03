@@ -13,18 +13,18 @@ namespace TicTacToe.Editor.Presentation {
             container.visible = false;
         }
 
-        public async Task ShowWinPopupAsync(IGameController gameController, Symbol winSymbol) {
+        public async Task ShowWinPopupAsync(Symbol winSymbol) {
             Container.visible = true;
             var popup = new MessageboxPopup(_styleSettings);
-            var popupController = new WinPopupController(popup, gameController, winSymbol, this);
+            var popupController = new WinPopupController(popup, winSymbol, this);
             Container.Add(popup);
             await popup.ShowAsync();
         }
 
-        public async Task ShowDrawPopupAsync(IGameController gameController) {
+        public async Task ShowDrawPopupAsync() {
             Container.visible = true;
             var popup = new MessageboxPopup(_styleSettings);
-            var popupController = new DrawPopupController(popup, this, gameController);
+            var popupController = new DrawPopupController(popup, this);
             Container.Add(popup);
             await popup.ShowAsync();
         }

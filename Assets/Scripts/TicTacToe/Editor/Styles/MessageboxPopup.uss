@@ -27,7 +27,7 @@
     border-width: 4px;
     border-color: #389485;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     transition: scale .2s ease-out, opacity .15s ease-out;
 }
 
@@ -46,7 +46,6 @@
     -unity-font-style: bold;
     font-size: 64px;
     -unity-text-align: middle-center;
-    flex: .75;
 }
 
 .restart-button {

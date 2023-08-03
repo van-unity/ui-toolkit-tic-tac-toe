@@ -5,8 +5,8 @@ using UnityEngine.UIElements;
 namespace TicTacToe.Editor.Presentation {
     public interface IPopupManager {
         VisualElement Container { get; }
-        Task ShowWinPopupAsync(IGameController gameController, Symbol winSymbol);
-        Task ShowDrawPopupAsync(IGameController gameController);
+        Task ShowWinPopupAsync(Symbol winSymbol);
+        Task ShowDrawPopupAsync();
         void HidePopupAsync(IPopup popup);
     }
 }

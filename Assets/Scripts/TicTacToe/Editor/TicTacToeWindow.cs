@@ -2,10 +2,8 @@ using System;
 using TicTacToe.Editor.Application;
 using TicTacToe.Editor.Domain;
 using TicTacToe.Editor.Presentation;
-using TicTacToe.Editor.VisualElementExtensions;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace TicTacToe.Editor {
     public class TicTacToeWindow : EditorWindow {
@@ -20,8 +18,7 @@ namespace TicTacToe.Editor {
         private IBoardEventsProvider _boardEventsProvider;
         private IMoveStrategy _manualMoveStrategy;
         private IMoveStrategy _automatedMoveStrategy;
-        private PopupManager _popupManager;
-
+        private IPopupManager _popupManager;
 
         private void OnEnable() {
             LoadGameSettings();
@@ -42,7 +39,6 @@ namespace TicTacToe.Editor {
                 _automatedMoveStrategy, _popupManager);
             _gameController = gameController;
             _gameEvents = gameController;
-            rootVisualElement.RegisterCallback<GeometryChangedEvent>(evt => evt.PreventDefault());
         }
 
         private void LoadGameSettings() {
@@ -95,12 +91,12 @@ namespace TicTacToe.Editor {
         private static void ShowWindow() {
             var window = EditorWindow.GetWindow<TicTacToeWindow>();
             window.titleContent = new GUIContent();
-            window.minSize = new Vector2(640, 960);
-            window.maxSize = window.minSize;
             window.Show();
         }
 
         private void CreateGUI() {
+            this.minSize = new Vector2(_gameSettings.BoardDimensions.x, _gameSettings.BoardDimensions.y);
+            this.maxSize = this.minSize;
             var boardView = new BoardView(_gameSettings.BoardSize, _gameSettings.BoardSize, _styleSettings);
             var boardViewController = new BoardViewController(boardView, _board,
                 _boardEventsHandler, _gameEvents);
@@ -111,9 +107,6 @@ namespace TicTacToe.Editor {
 
             rootVisualElement.Add(gameScreen);
             rootVisualElement.Add(_popupManager.Container);
-        }
-
-        private void OnDisable() {
         }
     }
 }

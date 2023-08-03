@@ -58,12 +58,12 @@ namespace TicTacToe.Editor.Application {
 
         private async void WaitAndShowWinPopup(Symbol winSymbol) {
             await Task.Delay(750);
-            await _popupManager.ShowWinPopupAsync(this, winSymbol);
+            await _popupManager.ShowWinPopupAsync(winSymbol);
         }
 
         private async void WaitAndShowDrawPopup() {
             await Task.Delay(750);
-            await _popupManager.ShowDrawPopupAsync(this);
+            await _popupManager.ShowDrawPopupAsync();
         }
 
         public void Start() {
