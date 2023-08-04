@@ -1,4 +1,3 @@
-using TicTacToe.Editor.Domain;
 using TicTacToe.Editor.Presentation.CustomEvents;
 using UnityEngine.UIElements;
 

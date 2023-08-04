@@ -21,16 +21,16 @@ namespace TicTacToe.Editor {
         private IPopupManager _popupManager;
 
         private void OnEnable() {
-            LoadGameSettings();
-            LoadStyleSettings();
+            _gameSettings = AssetLoader.LoadAsset<GameSettings>();
+            _styleSettings = AssetLoader.LoadAsset<StyleSettings>();
             _board = new Board(_gameSettings.BoardSize);
             var boardEventsManager = new BoardEventsManager();
             _boardEventsProvider = boardEventsManager;
             _boardEventsHandler = boardEventsManager;
             _manualMoveStrategy = new ManualMoveStrategy(_boardEventsProvider);
-            _automatedMoveStrategy = new DelayedRandomMoveStrategy(1000);
-            CreatePlayerO();
-            CreatePlayerX();
+            _automatedMoveStrategy = new DelayedRandomMoveStrategy(_gameSettings.AutomatedPlayerDelayMS);
+            _playerX = CreatePlayer(Symbol.X, _gameSettings.PlayerXMode);
+            _playerO = CreatePlayer(Symbol.O, _gameSettings.PlayerOMode);
 
             var popupsContainer = new PopupsContainer(_styleSettings);
             _popupManager = new PopupManager(popupsContainer, _styleSettings);
@@ -41,50 +41,15 @@ namespace TicTacToe.Editor {
             _gameEvents = gameController;
         }
 
-        private void LoadGameSettings() {
-            var guids = AssetDatabase.FindAssets($"t:{typeof(GameSettings)}");
-            switch (guids.Length) {
-                case > 1:
-                    Debug.LogWarning("Multiple GameSettings found!");
-                    break;
-                case 0:
-                    throw new NullReferenceException("Unable to find GameSettings!");
-            }
-
-            var path = AssetDatabase.GUIDToAssetPath(guids[0]);
-            _gameSettings = AssetDatabase.LoadAssetAtPath<GameSettings>(path);
-        }
-
-        private void LoadStyleSettings() {
-            var guids = AssetDatabase.FindAssets($"t:{typeof(StyleSettings)}");
-            switch (guids.Length) {
-                case > 1:
-                    Debug.LogWarning("Multiple GameSettings found!");
-                    break;
-                case 0:
-                    throw new NullReferenceException("Unable to find GameSettings!");
-            }
-
-            var path = AssetDatabase.GUIDToAssetPath(guids[0]);
-            _styleSettings = AssetDatabase.LoadAssetAtPath<StyleSettings>(path);
-        }
-
-        private void CreatePlayerO() {
-            var playerOStrategy = _gameSettings.PlayerOMode switch {
+        private IPlayer CreatePlayer(Symbol symbol, PlayerMode mode) {
+            var strategy = mode switch {
                 PlayerMode.Auto => _automatedMoveStrategy,
                 PlayerMode.Manual => _manualMoveStrategy,
-                _ => throw new ArgumentOutOfRangeException()
+                _ => throw new ArgumentOutOfRangeException(nameof(mode),
+                    $"The player mode '{mode}' is not supported. Please use either 'PlayerMode.Auto' or 'PlayerMode.Manual'.")
             };
-            _playerO = new Player(_gameSettings.PlayerOMode, Symbol.O, playerOStrategy);
-        }
 
-        private void CreatePlayerX() {
-            var playerXStrategy = _gameSettings.PlayerXMode switch {
-                PlayerMode.Auto => _automatedMoveStrategy,
-                PlayerMode.Manual => _manualMoveStrategy,
-                _ => throw new ArgumentOutOfRangeException()
-            };
-            _playerX = new Player(_gameSettings.PlayerXMode, Symbol.X, playerXStrategy);
+            return new Player(mode, symbol, strategy);
         }
 
         [MenuItem("TicTacToe/Play")]
@@ -95,7 +60,7 @@ namespace TicTacToe.Editor {
         }
 
         private void CreateGUI() {
-            this.minSize = new Vector2(_gameSettings.BoardDimensions.x, _gameSettings.BoardDimensions.y);
+            this.minSize = new Vector2(_gameSettings.WindowDimensions.x, _gameSettings.WindowDimensions.y);
             this.maxSize = this.minSize;
             var boardView = new BoardView(_gameSettings.BoardSize, _gameSettings.BoardSize, _styleSettings);
             var boardViewController = new BoardViewController(boardView, _board,

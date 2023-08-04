@@ -40,7 +40,7 @@ namespace TicTacToe.Editor.Domain {
                                                                _state[movePosition.RowIndex,
                                                                    movePosition.ColumnIndex] == Symbol.Empty;
 
-        public bool IsPositionValid(BoardPosition position) =>
+        private bool IsPositionValid(BoardPosition position) =>
             position.IsValid && position.RowIndex < _size && position.ColumnIndex < _size;
 
 

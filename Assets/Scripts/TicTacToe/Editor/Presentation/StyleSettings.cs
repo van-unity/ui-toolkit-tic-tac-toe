@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace TicTacToe.Editor.Presentation {
-    [CreateAssetMenu(fileName = "StyleSettings", menuName = "TicTacToe/StyleSettings", order = 0)]
+    [CreateAssetMenu(fileName = "StyleSettings", menuName = "TicTacToe/Settings/StyleSettings", order = 0)]
     public class StyleSettings : ScriptableObject, IStyleSettings {
         [SerializeField] private StyleSheet _boardStyle;
         [SerializeField] private StyleSheet _cellStyle;

@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using TicTacToe.Editor.Domain;
 using TicTacToe.Editor.Presentation.CustomEvents;
 using TicTacToe.Editor.VisualElementExtensions;
@@ -7,8 +6,7 @@ using UnityEngine.UIElements;
 
 namespace TicTacToe.Editor.Presentation {
     public class BoardView : VisualElement {
-        private const float LINE_DURATION_MS = 500;
-        private const EasingMode LINE_EASING_MODE = EasingMode.EaseOutSine;
+        private const float GRID_LINE_OFFSET = .1f;
 
         private readonly VisualElement _gridLinesContainer;
         private readonly VisualElement _cellsContainer;
@@ -82,8 +80,8 @@ namespace TicTacToe.Editor.Presentation {
             for (int columnIndex = 1; columnIndex < _columns; columnIndex++) {
                 var from = LogicToPixelPos(new BoardPosition(0, columnIndex));
                 var to = LogicToPixelPos(new BoardPosition(_rows, columnIndex));
-                from.y += .1f * _cellHeight;
-                to.y -= .1f * _cellHeight;
+                from.y += GRID_LINE_OFFSET * _cellHeight;
+                to.y -= GRID_LINE_OFFSET * _cellHeight;
                 var line = new Line(from, to);
                 line.AddToClassList("grid-line");
                 _gridLinesContainer.Add(line);
@@ -93,8 +91,8 @@ namespace TicTacToe.Editor.Presentation {
             for (int rowIndex = 1; rowIndex < _rows; rowIndex++) {
                 var from = LogicToPixelPos(new BoardPosition(rowIndex, 0));
                 var to = LogicToPixelPos(new BoardPosition(rowIndex, _columns));
-                from.x += .1f * _cellWidth;
-                to.x -= .1f * _cellWidth;
+                from.x += GRID_LINE_OFFSET * _cellWidth;
+                to.x -= GRID_LINE_OFFSET * _cellWidth;
                 var line = new Line(from, to);
                 line.AddToClassList("grid-line");
                 _gridLinesContainer.Add(line);
@@ -105,12 +103,6 @@ namespace TicTacToe.Editor.Presentation {
         private void AnimateLineLength(Line line, float width, int delayMS = 0) {
             line.Length = 0;
             line.schedule.Execute(() => {
-                line.style.transitionProperty =
-                    new StyleList<StylePropertyName>(new List<StylePropertyName>() { "width" });
-                line.style.transitionTimingFunction = new StyleList<EasingFunction>(new List<EasingFunction>()
-                    { new(LINE_EASING_MODE) });
-                line.style.transitionDuration = new StyleList<TimeValue>(new List<TimeValue>()
-                    { new(LINE_DURATION_MS, TimeUnit.Millisecond) });
                 line.Length = width;
             }).ExecuteLater(TimeSettings.DELTA_TIME_MS + delayMS);
         }

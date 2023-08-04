@@ -1,5 +1,4 @@
 using System;
-using System.Threading.Tasks;
 using TicTacToe.Editor.Domain;
 
 namespace TicTacToe.Editor.Application {

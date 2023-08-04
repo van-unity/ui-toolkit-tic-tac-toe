@@ -15,7 +15,7 @@
 }
 
 .cells-container {
-    position: absolute; 
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
@@ -32,17 +32,19 @@
 
 .grid-line {
     position: absolute;
-    height: 12px;
-    border-radius: 8px;
+    height: 10px;
+    border-radius: 5px;
     background-color: #389485;
+    transition: width .5s ease-in-out;
 }
 
 .winning-line {
     position: absolute;
-    height: 12px;
-    border-radius: 8px;
+    height: 10px;
+    border-radius: 5px;
     background-color: limegreen;
     color: black;
+    transition: width .5s ease-in-out;
 }
 
 .player-symbol {
