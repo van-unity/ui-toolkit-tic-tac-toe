@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dcc340e74783428ba6aceb0320f2a40e, type: 3}
+  m_Name: StyleSettings
+  m_EditorClassIdentifier: 
+  _rootStyle: {fileID: 7433441132597879392, guid: d0fca7c4c8594b9bb5ad4979093c4a36, type: 3}
+  _boardStyle: {fileID: 7433441132597879392, guid: be1e26728bde4ba0a1a3489813ee476c, type: 3}
+  _cellStyle: {fileID: 7433441132597879392, guid: 94e885c8d00646b689758df55904017a, type: 3}
+  _gameScreenStyle: {fileID: 7433441132597879392, guid: 2de2e05741ce423a840ddc914cb1e26f, type: 3}
+  _playerModeStyle: {fileID: 7433441132597879392, guid: 022644b486ac413d87af3130ee76765d, type: 3}
+  _popupsContainerStyle: {fileID: 7433441132597879392, guid: 38c7cff2b2cd4910817ee5000cc970f7, type: 3}
+  _messageboxPopupStyle: {fileID: 7433441132597879392, guid: a9baf54ddf63444b921a7bf226182a5e, type: 3}

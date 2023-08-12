@@ -1,0 +1,23 @@
+{
+    "name": "com.uitoolkit.tictactoe.presentation.editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:810086a3891764aceae853686f5d6817",
+        "GUID:587866de4963540f6aa4e775cb753bde",
+        "GUID:26a090ee0f2594479a1acfb146aed548",
+        "GUID:61ec1dec1eec5407baae640313dda0d7",
+        "GUID:7e6a56fd2d9b54e7f9d3e388971a2050",
+        "GUID:d25ab07ab9ff84d85b240477a1d472b4"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

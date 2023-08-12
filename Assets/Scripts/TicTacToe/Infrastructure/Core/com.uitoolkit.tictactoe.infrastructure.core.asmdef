@@ -1,0 +1,18 @@
+{
+    "name": "com.uitoolkit.tictactoe.infrastructure.core",
+    "rootNamespace": "",
+    "references": [
+        "GUID:26a090ee0f2594479a1acfb146aed548",
+        "GUID:587866de4963540f6aa4e775cb753bde",
+        "GUID:61ec1dec1eec5407baae640313dda0d7"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

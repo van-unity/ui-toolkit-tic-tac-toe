@@ -1,0 +1,16 @@
+{
+    "name": "com.uitoolkit.tictactoe.infrastructure.editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:7e6a56fd2d9b54e7f9d3e388971a2050"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
