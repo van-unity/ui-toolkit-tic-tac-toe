@@ -8,15 +8,17 @@ using UnityEngine.UIElements;
 namespace Editor.TicTacToe.Scripts.Infrastructure.CustomInspectors {
     [CustomEditor(typeof(GameSettings))]
     public class GameSettingsEditor : UnityEditor.Editor {
-        private IAssetLoader _assetLoader;
+        private StyleSheet _styleSheet;
 
         private void OnEnable() {
-            _assetLoader = new AssetDatabaseAssetLoader();
+            var assetLoader = new AssetDatabaseAssetLoader();
+            _styleSheet = assetLoader.LoadAsset<StyleSheet>("GameSettings");
         }
 
         public override VisualElement CreateInspectorGUI() {
             var root = new VisualElement();
-            root.SetStyle(_assetLoader.LoadAsset<StyleSheet>("GameSettings"));
+
+            root.SetStyle(_styleSheet);
             root.AddToClassList("game-settings-editor");
 
             var title = new Label("TicTacToe GameSettings");
