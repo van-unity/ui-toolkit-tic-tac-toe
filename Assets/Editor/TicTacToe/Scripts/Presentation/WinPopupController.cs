@@ -8,29 +8,30 @@ namespace Editor.TicTacToe.Scripts.Presentation {
 
         private readonly MessageboxPopup _popup;
         private readonly PlayerSymbol _winSymbol;
-        private readonly PopupManager _popupManager;
+        private readonly IPopupManager _popupManager;
 
-        public WinPopupController(MessageboxPopup winPopup, PlayerSymbol winSymbol, PopupManager popupManager) {
+        public WinPopupController(MessageboxPopup winPopup, PlayerSymbol winSymbol, IPopupManager popupManager) {
             _popup = winPopup;
             _winSymbol = winSymbol;
             _popupManager = popupManager;
-            _popup.RegisterCallback<AttachToPanelEvent>(ViewOpened);
-            _popup.RegisterCallback<MessageboxCloseButtonClicked>(OnRestartButtonClicked);
-            _popup.RegisterCallback<DetachFromPanelEvent>(ViewClosed);
+            _popup.RegisterCallback<AttachToPanelEvent>(OnViewOpened);
         }
 
-        private void ViewOpened(AttachToPanelEvent evt) {
+        private void OnViewOpened(AttachToPanelEvent evt) {
             _popup.SetMessage(string.Format(WIN_TEXT_FORMAT, _winSymbol));
+            
+            _popup.RegisterCallback<MessageboxCloseButtonClicked>(OnRestartButtonClicked);
+            _popup.RegisterCallback<DetachFromPanelEvent>(OnViewClosed);
         }
 
         private void OnRestartButtonClicked(MessageboxCloseButtonClicked evt) {
             _popupManager.HidePopupAsync(_popup);
         }
 
-        private void ViewClosed(DetachFromPanelEvent evt) {
-            _popup.UnregisterCallback<AttachToPanelEvent>(ViewOpened);
+        private void OnViewClosed(DetachFromPanelEvent evt) {
+            _popup.UnregisterCallback<AttachToPanelEvent>(OnViewOpened);
             _popup.UnregisterCallback<MessageboxCloseButtonClicked>(OnRestartButtonClicked);
-            _popup.UnregisterCallback<DetachFromPanelEvent>(ViewClosed);
+            _popup.UnregisterCallback<DetachFromPanelEvent>(OnViewClosed);
         }
     }
 }

@@ -19,15 +19,17 @@ namespace Editor.TicTacToe.Scripts.Presentation {
             _gameEvents = gameEvents;
             _viewSettings = viewSettings;
 
-            _view.RegisterCallback<AttachToPanelEvent>(ViewOpened);
-            _view.RegisterCallback<CellClickedEvent>(OnCellClicked);
-            _view.RegisterCallback<DetachFromPanelEvent>(ViewClosed);
+            _view.RegisterCallback<AttachToPanelEvent>(OnViewOpened);
         }
 
-        private void ViewOpened(AttachToPanelEvent evt) {
+        private void OnViewOpened(AttachToPanelEvent evt) {
             _board.CellUpdated += OnCellUpdated;
             _gameEvents.GameWon += OnGameWon;
             _gameEvents.BeforeRestart += OnBeforeRestart;
+            
+            _view.RegisterCallback<CellClickedEvent>(OnCellClicked);
+            _view.RegisterCallback<DetachFromPanelEvent>(OnViewClosed);
+            
             _view.schedule
                 .Execute(() => { _view.Initialize(); })
                 .ExecuteLater(_viewSettings.BoardDrawDelayMS);
@@ -49,12 +51,12 @@ namespace Editor.TicTacToe.Scripts.Presentation {
             _view.DrawWinningLine(win.WinPositions[0], win.WinPositions[^1]);
         }
 
-        private void ViewClosed(DetachFromPanelEvent evt) {
+        private void OnViewClosed(DetachFromPanelEvent evt) {
             _board.CellUpdated -= OnCellUpdated;
             _gameEvents.GameWon -= OnGameWon;
             _gameEvents.BeforeRestart -= OnBeforeRestart;
-            _view.UnregisterCallback<DetachFromPanelEvent>(ViewClosed);
-            _view.UnregisterCallback<AttachToPanelEvent>(ViewOpened);
+            _view.UnregisterCallback<DetachFromPanelEvent>(OnViewClosed);
+            _view.UnregisterCallback<AttachToPanelEvent>(OnViewOpened);
             _view.UnregisterCallback<CellClickedEvent>(OnCellClicked);
         }
     }

@@ -50,7 +50,7 @@ namespace Editor.TicTacToe.Scripts.Presentation {
             await popup.ShowAsync();
         }
 
-        public async void HidePopupAsync(IPopup popup) {
+        public async void HidePopupAsync<T>(T popup) where T: VisualElement, IPopup{
             await popup.HideAsync();
             var visualElement = popup as VisualElement;
             visualElement.Clear();

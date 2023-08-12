@@ -20,11 +20,7 @@ namespace Editor.TicTacToe.Scripts.Presentation {
             _gameController = gameController;
             _gameSettings = gameSettings;
 
-            _view.RegisterCallback<AttachToPanelEvent>(ViewOpened);
-            _view.RegisterCallback<DetachFromPanelEvent>(ViewClosed);
-            _view.RegisterCallback<StartButtonClickEvent>(OnStartButtonClick);
-            _view.RegisterCallback<RestartButtonClicked>(OnRestartButtonClick);
-            _view.RegisterCallback<PlayerModeClickedEvent>(OnPlayerModeClicked);
+            _view.RegisterCallback<AttachToPanelEvent>(OnViewOpened);
         }
 
         private void OnPlayerModeClicked(PlayerModeClickedEvent evt) {
@@ -35,7 +31,12 @@ namespace Editor.TicTacToe.Scripts.Presentation {
             _gameController.Restart();
         }
 
-        private void ViewOpened(AttachToPanelEvent evt) {
+        private void OnViewOpened(AttachToPanelEvent evt) {
+            _view.RegisterCallback<DetachFromPanelEvent>(OnViewClosed);
+            _view.RegisterCallback<StartButtonClickEvent>(OnStartButtonClick);
+            _view.RegisterCallback<RestartButtonClicked>(OnRestartButtonClick);
+            _view.RegisterCallback<PlayerModeClickedEvent>(OnPlayerModeClicked);
+            
             InitializeTheView();
             SubscribeOnGameEvents();
         }
@@ -71,10 +72,10 @@ namespace Editor.TicTacToe.Scripts.Presentation {
             _gameController.Start();
         }
 
-        private void ViewClosed(DetachFromPanelEvent evt) {
+        private void OnViewClosed(DetachFromPanelEvent evt) {
             UnsubscribeFromGameEvents();
-            _view.UnregisterCallback<AttachToPanelEvent>(ViewOpened);
-            _view.UnregisterCallback<DetachFromPanelEvent>(ViewClosed);
+            _view.UnregisterCallback<AttachToPanelEvent>(OnViewOpened);
+            _view.UnregisterCallback<DetachFromPanelEvent>(OnViewClosed);
             _view.UnregisterCallback<StartButtonClickEvent>(OnStartButtonClick);
             _view.UnregisterCallback<RestartButtonClicked>(OnRestartButtonClick);
             _view.UnregisterCallback<PlayerModeClickedEvent>(OnPlayerModeClicked);

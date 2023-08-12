@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using Editor.TicTacToe.Scripts.Domain;
 using Editor.TicTacToe.Scripts.Presentation.CustomEvents;
 using Editor.TicTacToe.Scripts.Presentation.VisualElementExtensions;
 using Editor.TicTacToe.Scripts.Utils;
