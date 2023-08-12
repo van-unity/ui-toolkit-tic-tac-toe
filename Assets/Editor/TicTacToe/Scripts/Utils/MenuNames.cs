@@ -5,6 +5,8 @@ namespace Editor.TicTacToe.Scripts.Utils {
     /// </summary>
     public static class MenuNames {
         private const string APPLICATION_NAME = "TicTacToe";
+        
+        public const string WINDOW_TITLE = "Tic-Tac-Toe";
         public const string SETTINGS = APPLICATION_NAME + "/Settings";
         public const string SHOW_WINDOW = APPLICATION_NAME + "/Play";
     }

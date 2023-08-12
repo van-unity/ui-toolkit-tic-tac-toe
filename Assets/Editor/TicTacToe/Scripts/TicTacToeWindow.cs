@@ -10,8 +10,6 @@ using UnityEngine;
 
 namespace Editor.TicTacToe.Scripts {
     public class TicTacToeWindow : EditorWindow {
-        private const string TITLE_CONTENT = "Tic-Tac-Toe";
-
         private IGameSettings _gameSettings;
         private IStyleSettings _styleSettings;
         private IViewSettings _viewSettings;
@@ -59,7 +57,7 @@ namespace Editor.TicTacToe.Scripts {
         [MenuItem(MenuNames.SHOW_WINDOW)]
         private static void ShowWindow() {
             var window = EditorWindow.GetWindow<TicTacToeWindow>();
-            window.titleContent = new GUIContent(TITLE_CONTENT);
+            window.titleContent = new GUIContent(MenuNames.WINDOW_TITLE);
             window.Show();
         }
 
@@ -80,8 +78,6 @@ namespace Editor.TicTacToe.Scripts {
             rootVisualElement.Add(gameScreen);
 
             _popupManager = new PopupManager(rootVisualElement, _styleSettings, _gameController);
-
-            rootVisualElement.Add(_popupManager.Container);
         }
 
         private void OnDestroy() {
