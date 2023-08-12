@@ -1,0 +1,49 @@
+.game-settings-editor {
+    --white: #f8f7f6;
+    --black: #212121;
+    --light-green: #8DE4AF;
+    --dark-green: #389485;
+    --vertical-spacing: 12px;
+    position: relative;
+    background-color: var(--black);
+    border-color: var(--white);
+    border-width: 2px;
+    border-radius: 16px;
+    padding: 12px;
+    margin-top: var(--vertical-spacing);
+}
+
+.title {
+    font-size: 32px;
+    -unity-font-style: bold;
+    -unity-text-align: upper-center;
+    color: var(--white);
+}
+
+.size-field {
+    font-size: 16px;
+    -unity-font-style: bold;
+}
+
+.player-modes-container {
+    flex-direction: row;
+    justify-content: space-between;
+} 
+
+.player-mode {
+    font-size: 16px;
+    -unity-font-style: bold;
+}
+
+.automated-player-delay-field {
+    font-size: 16px;
+    -unity-font-style: bold;
+    color: var(--white);
+}
+
+.bottom-line {
+    padding-bottom: 12px;
+    margin-bottom: var(--vertical-spacing);
+    border-bottom-color: var(--white);
+    border-bottom-width: 2px;
+}

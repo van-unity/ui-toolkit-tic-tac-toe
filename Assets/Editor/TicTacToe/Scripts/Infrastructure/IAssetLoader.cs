@@ -5,5 +5,6 @@ namespace Editor.TicTacToe.Scripts.Infrastructure {
     /// </summary>
     public interface IAssetLoader {
         T LoadAsset<T>();
+        T LoadAsset<T>(string assetName);
     }
 }
