@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Editor.TicTacToe.Scripts.Domain;
-using Editor.TicTacToe.Scripts.Utils;
 
 namespace Editor.TicTacToe.Scripts.Application {
     ///<summary>
@@ -20,10 +18,15 @@ namespace Editor.TicTacToe.Scripts.Application {
         private bool _restartRequested;
 
         public event Action GameStarted;
+        
         public event Action<PlayerSymbol> TurnChanged;
+        
         public event Action<Win> GameWon;
+        
         public event Action GameDraw;
+        
         public event Action<PlayerSymbol, PlayerMode> PlayerModeChanged;
+        
         public event Action BeforeRestart;
 
         public GameController(IPlayer playerX, IPlayer playerO, Board board, IGameSettings gameSettings,
@@ -70,8 +73,10 @@ namespace Editor.TicTacToe.Scripts.Application {
         public void Start() {
             _currentPlayer = PlayerSymbol.X;
             _isGameStarted = true;
+            
             GameStarted?.Invoke();
             TurnChanged?.Invoke(_currentPlayer);
+            
             _playerBySymbol[_currentPlayer].MakeMove(_board, OnPlayerMoved);
         }
 
@@ -79,6 +84,7 @@ namespace Editor.TicTacToe.Scripts.Application {
             _playerBySymbol[_currentPlayer].CancelMove();
             BeforeRestart?.Invoke();
             _board.Reset();
+            
             Start();
         }
 

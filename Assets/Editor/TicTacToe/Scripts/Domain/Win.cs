@@ -10,6 +10,7 @@ namespace Editor.TicTacToe.Scripts.Domain {
         private readonly BoardPosition[] _winPositions;
         
         public PlayerSymbol Symbol { get; }
+        
         public IReadOnlyList<BoardPosition> WinPositions => _winPositions;
 
         public static Win Invalid { get; }

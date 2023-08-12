@@ -14,8 +14,11 @@ namespace Editor.TicTacToe.Scripts.Infrastructure {
         [SerializeField] private int _automatedPlayerDelayMS = 1000;
 
         public int BoardSize => _boardSize;
+        
         public PlayerMode PlayerXMode => _playerXMode;
+        
         public PlayerMode PlayerOMode => _playerOMode;
+        
         public int AutomatedPlayerDelayMS => _automatedPlayerDelayMS;
     }
 }

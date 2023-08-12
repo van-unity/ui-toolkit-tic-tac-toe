@@ -1,4 +1,3 @@
-
 using UnityEngine.UIElements;
 
 namespace Editor.TicTacToe.Scripts.Presentation {

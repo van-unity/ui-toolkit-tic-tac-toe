@@ -11,6 +11,7 @@ namespace Editor.TicTacToe.Scripts.Presentation {
         public DrawPopupController(MessageboxPopup popup, IPopupManager popupManager) {
             _popup = popup;
             _popupManager = popupManager;
+            
             _popup.RegisterCallback<AttachToPanelEvent>(OnViewOpened);
         }
         

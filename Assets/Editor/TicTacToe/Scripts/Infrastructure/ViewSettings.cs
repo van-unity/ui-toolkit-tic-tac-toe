@@ -9,6 +9,7 @@ namespace Editor.TicTacToe.Scripts.Infrastructure {
         [SerializeField] private int _boardDrawDelayMS = 1000;
 
         public Vector2 WindowDimensions => _windowDimensions;
+       
         public int BoardDrawDelayMS => _boardDrawDelayMS;
     }
 }

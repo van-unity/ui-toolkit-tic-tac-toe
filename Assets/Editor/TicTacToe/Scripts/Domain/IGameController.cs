@@ -4,7 +4,9 @@ namespace Editor.TicTacToe.Scripts.Domain {
     /// </summary>
     public interface IGameController {
         void Start();
+        
         void Restart();
+        
         void TogglePlayerMode(PlayerSymbol playerSymbol);
     }
 }

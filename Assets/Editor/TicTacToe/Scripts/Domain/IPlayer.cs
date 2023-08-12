@@ -8,9 +8,13 @@ namespace Editor.TicTacToe.Scripts.Domain {
     /// </summary>
     public interface IPlayer {
         PlayerMode PlayerMode { get; }
+        
         void SetMode(PlayerMode mode);
+        
         void SetStrategy(IPlayerMoveStrategy strategy);
+        
         void MakeMove(Board model, Action<BoardPosition> callback = null);
+        
         void CancelMove();
     }
 }

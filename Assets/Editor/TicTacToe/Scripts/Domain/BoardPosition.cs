@@ -8,6 +8,7 @@ namespace Editor.TicTacToe.Scripts.Domain {
     /// </summary>
     public readonly struct BoardPosition : IEquatable<BoardPosition> {
         public int RowIndex { get; }
+        
         public int ColumnIndex { get; }
 
         public static BoardPosition Invalid { get; }

@@ -13,6 +13,7 @@ namespace Editor.TicTacToe.Scripts.Domain {
         private readonly List<BoardPosition> _emptyCells;
 
         public IReadOnlyList<BoardPosition> EmptyCells => _emptyCells;
+        
         public bool IsFull => _emptyCells.Count == 0;
 
         public event Action<BoardPosition, PlayerSymbol> CellUpdated;
@@ -21,6 +22,7 @@ namespace Editor.TicTacToe.Scripts.Domain {
             _size = size;
             _state = new PlayerSymbol[_size, _size];
             _emptyCells = new List<BoardPosition>(_size * _size);
+            
             InitializeEmptyCellsList();
         }
 

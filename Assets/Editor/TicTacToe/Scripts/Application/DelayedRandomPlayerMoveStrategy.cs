@@ -19,6 +19,7 @@ namespace Editor.TicTacToe.Scripts.Application {
         public async void Move(Board board, Action<BoardPosition> onMoveCompleted) {
             _moveCancellation?.Dispose();
             _moveCancellation = new CancellationTokenSource();
+            
             try {
                 await Task.Delay(_delayMS, _moveCancellation.Token);
                 if (_moveCancellation.IsCancellationRequested) {

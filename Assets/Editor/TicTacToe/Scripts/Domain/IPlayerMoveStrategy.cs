@@ -7,6 +7,7 @@ namespace Editor.TicTacToe.Scripts.Domain {
     /// </summary>
     public interface IPlayerMoveStrategy {
         void Move(Board board, Action<BoardPosition> onMoveCompleted);
+        
         void Cancel();
     }
 }

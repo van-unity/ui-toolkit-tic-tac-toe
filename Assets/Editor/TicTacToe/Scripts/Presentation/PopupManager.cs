@@ -14,9 +14,11 @@ namespace Editor.TicTacToe.Scripts.Presentation {
         public PopupManager(VisualElement rootVisualElement, IStyleSettings styleSettings, IGameEvents gameEvents) {
             _styleSettings = styleSettings;
             _gameEvents = gameEvents;
+            
             Container = new PopupsContainer(styleSettings);
-            rootVisualElement.Add(Container);
             Container.visible = false;
+            
+            rootVisualElement.Add(Container);
             
             _gameEvents.GameWon += OnGameWon;
             _gameEvents.GameDraw += OnGameDraw;

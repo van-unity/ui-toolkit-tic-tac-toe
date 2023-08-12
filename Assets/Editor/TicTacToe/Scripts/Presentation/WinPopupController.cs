@@ -14,6 +14,7 @@ namespace Editor.TicTacToe.Scripts.Presentation {
             _popup = winPopup;
             _winSymbol = winSymbol;
             _popupManager = popupManager;
+            
             _popup.RegisterCallback<AttachToPanelEvent>(OnViewOpened);
         }
 

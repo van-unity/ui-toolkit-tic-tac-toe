@@ -7,6 +7,7 @@ namespace Editor.TicTacToe.Scripts.Application {
     /// </summary>
     public class Player : IPlayer {
         private IPlayerMoveStrategy _moveStrategy;
+        
         public PlayerMode PlayerMode { get; private set; }
 
         public Player(PlayerMode playerMode, IPlayerMoveStrategy moveStrategy) {
