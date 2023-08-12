@@ -1,0 +1,8 @@
+.root {
+    --white: #f8f7f6;
+    --black: #212121;
+    --light-green: #8DE4AF;
+    --dark-green: #389485;
+    --winning-line-color: limegreen;
+    top: 0;
+}
