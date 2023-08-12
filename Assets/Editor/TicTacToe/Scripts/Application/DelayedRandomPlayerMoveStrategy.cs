@@ -1,8 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Editor.TicTacToe.Scripts.Domain;
-using UnityEngine;
 
 namespace Editor.TicTacToe.Scripts.Application {
     /// <summary>
@@ -19,7 +19,7 @@ namespace Editor.TicTacToe.Scripts.Application {
         public async void Move(Board board, Action<BoardPosition> onMoveCompleted) {
             _moveCancellation?.Dispose();
             _moveCancellation = new CancellationTokenSource();
-            
+
             try {
                 await Task.Delay(_delayMS, _moveCancellation.Token);
                 if (_moveCancellation.IsCancellationRequested) {
@@ -32,15 +32,22 @@ namespace Editor.TicTacToe.Scripts.Application {
                     return;
                 }
 
-                var chosenCell = emptyCells[UnityEngine.Random.Range(0, emptyCells.Count)];
+                var chosenCell = ChooseCell(emptyCells);
                 onMoveCompleted(chosenCell);
             }
             catch (TaskCanceledException canceledException) {
                 //pass
             }
-            catch (Exception exception) {
-                Debug.LogError(exception);
+            catch (Exception e) {
+                // handle exceptions 
             }
+        }
+
+        private BoardPosition ChooseCell(IReadOnlyList<BoardPosition> emptyCells) {
+            var rnd = new Random();
+            var randomIndex = rnd.Next(0, emptyCells.Count);
+
+            return emptyCells[randomIndex];
         }
 
         public void Cancel() {

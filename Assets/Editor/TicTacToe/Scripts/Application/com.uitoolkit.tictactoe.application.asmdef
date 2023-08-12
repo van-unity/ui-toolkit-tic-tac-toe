@@ -1,0 +1,16 @@
+{
+    "name": "com.uitoolkit.tictactoe.application",
+    "rootNamespace": "",
+    "references": [
+        "GUID:587866de4963540f6aa4e775cb753bde"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": true
+}
