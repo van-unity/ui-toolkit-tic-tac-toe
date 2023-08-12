@@ -9,17 +9,17 @@ namespace Editor.TicTacToe.Scripts.Presentation {
 
         private readonly IStyleSettings _styleSettings;
         private readonly IGameEvents _gameEvents;
-        public VisualElement Container { get; }
+        private readonly VisualElement _container;
 
         public PopupManager(VisualElement rootVisualElement, IStyleSettings styleSettings, IGameEvents gameEvents) {
             _styleSettings = styleSettings;
             _gameEvents = gameEvents;
-            
-            Container = new PopupsContainer(styleSettings);
-            Container.visible = false;
-            
-            rootVisualElement.Add(Container);
-            
+
+            _container = new PopupsContainer(styleSettings);
+            _container.visible = false;
+
+            rootVisualElement.Add(_container);
+
             _gameEvents.GameWon += OnGameWon;
             _gameEvents.GameDraw += OnGameDraw;
         }
@@ -37,27 +37,26 @@ namespace Editor.TicTacToe.Scripts.Presentation {
         }
 
         private async Task ShowWinPopupAsync(PlayerSymbol winSymbol) {
-            Container.visible = true;
+            _container.visible = true;
             var popup = new MessageboxPopup(_styleSettings);
             var popupController = new WinPopupController(popup, winSymbol, this);
-            Container.Add(popup);
+            _container.Add(popup);
             await popup.ShowAsync();
         }
 
         private async Task ShowDrawPopupAsync() {
-            Container.visible = true;
+            _container.visible = true;
             var popup = new MessageboxPopup(_styleSettings);
             var popupController = new DrawPopupController(popup, this);
-            Container.Add(popup);
+            _container.Add(popup);
             await popup.ShowAsync();
         }
 
-        public async void HidePopupAsync<T>(T popup) where T: VisualElement, IPopup{
+        public async void HidePopupAsync<T>(T popup) where T : IPopup {
             await popup.HideAsync();
             var visualElement = popup as VisualElement;
-            visualElement.Clear();
-            Container.Remove(visualElement);
-            Container.visible = false;
+            _container.Remove(visualElement);
+            _container.visible = false;
         }
 
         public void Dispose() {
