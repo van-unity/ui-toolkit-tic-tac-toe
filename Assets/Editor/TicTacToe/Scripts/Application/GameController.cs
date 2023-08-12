@@ -18,18 +18,18 @@ namespace Editor.TicTacToe.Scripts.Application {
         private bool _restartRequested;
 
         public event Action GameStarted;
-        
+
         public event Action<PlayerSymbol> TurnChanged;
-        
+
         public event Action<Win> GameWon;
-        
+
         public event Action GameDraw;
-        
+
         public event Action<PlayerSymbol, PlayerMode> PlayerModeChanged;
-        
+
         public event Action BeforeRestart;
 
-        public GameController(IPlayer playerX, IPlayer playerO, Board board, IGameSettings gameSettings,
+        public GameController(IPlayer playerX, IPlayer playerO, Board board,
             IPlayerMoveStrategy manualPlayerMoveStrategy, IPlayerMoveStrategy automatedPlayerMoveStrategy) {
             _playerBySymbol = new Dictionary<PlayerSymbol, IPlayer> {
                 { PlayerSymbol.X, playerX },
@@ -73,10 +73,10 @@ namespace Editor.TicTacToe.Scripts.Application {
         public void Start() {
             _currentPlayer = PlayerSymbol.X;
             _isGameStarted = true;
-            
+
             GameStarted?.Invoke();
             TurnChanged?.Invoke(_currentPlayer);
-            
+
             _playerBySymbol[_currentPlayer].MakeMove(_board, OnPlayerMoved);
         }
 
@@ -84,7 +84,7 @@ namespace Editor.TicTacToe.Scripts.Application {
             _playerBySymbol[_currentPlayer].CancelMove();
             BeforeRestart?.Invoke();
             _board.Reset();
-            
+
             Start();
         }
 

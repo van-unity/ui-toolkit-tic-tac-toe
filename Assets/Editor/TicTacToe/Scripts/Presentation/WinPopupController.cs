@@ -14,13 +14,13 @@ namespace Editor.TicTacToe.Scripts.Presentation {
             _popup = winPopup;
             _winSymbol = winSymbol;
             _popupManager = popupManager;
-            
+
             _popup.RegisterCallback<AttachToPanelEvent>(OnViewOpened);
         }
 
         private void OnViewOpened(AttachToPanelEvent evt) {
             _popup.SetMessage(string.Format(WIN_TEXT_FORMAT, _winSymbol));
-            
+
             _popup.RegisterCallback<MessageboxCloseButtonClicked>(OnRestartButtonClicked);
             _popup.RegisterCallback<DetachFromPanelEvent>(OnViewClosed);
         }

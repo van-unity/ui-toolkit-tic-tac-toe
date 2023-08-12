@@ -41,7 +41,7 @@ namespace Editor.TicTacToe.Scripts {
             _automatedPlayerMoveStrategy = new DelayedRandomPlayerMoveStrategy(_gameSettings.AutomatedPlayerDelayMS);
             var playerX = CreatePlayer(_gameSettings.PlayerXMode);
             var playerO = CreatePlayer(_gameSettings.PlayerOMode);
-            _gameController = new GameController(playerX, playerO, _board, _gameSettings, _manualPlayerMoveStrategy,
+            _gameController = new GameController(playerX, playerO, _board, _manualPlayerMoveStrategy,
                 _automatedPlayerMoveStrategy);
         }
 
