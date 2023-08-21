@@ -1,6 +1,5 @@
 using TicTacToe.Domain;
 using TicTacToe.Presentation.CustomEvents;
-using UnityEngine.UIElements;
 
 namespace TicTacToe.Presentation {
     public class GameScreenController {
@@ -19,21 +18,14 @@ namespace TicTacToe.Presentation {
             _gameController = gameController;
             _gameSettings = gameSettings;
 
-            _view.RegisterCallback<AttachToPanelEvent>(OnViewOpened);
+            _view.Opened += OnViewOpened;
         }
 
-        private void OnPlayerModeClicked(PlayerModeClickedEvent evt) {
-            _gameController.TogglePlayerMode(evt.PlayerSymbol);
-        }
-
-        private void OnRestartButtonClick(RestartButtonClicked evt) {
-            _gameController.Restart();
-        }
-
-        private void OnViewOpened(AttachToPanelEvent evt) {
-            _view.RegisterCallback<DetachFromPanelEvent>(OnViewClosed);
-            _view.RegisterCallback<StartButtonClickEvent>(OnStartButtonClick);
-            _view.RegisterCallback<RestartButtonClicked>(OnRestartButtonClick);
+        private void OnViewOpened() {
+            _view.Closed += OnViewClosed;
+            _view.StartClicked += OnStartButtonClick;
+            _view.RestartClicked += OnRestartButtonClick;
+            
             _view.RegisterCallback<PlayerModeClickedEvent>(OnPlayerModeClicked);
             
             InitializeTheView();
@@ -67,16 +59,25 @@ namespace TicTacToe.Presentation {
             _view.SetReStartButtonEnabled(true);
         }
 
-        private void OnStartButtonClick(StartButtonClickEvent evt) {
+        private void OnPlayerModeClicked(PlayerModeClickedEvent evt) {
+            _gameController.TogglePlayerMode(evt.PlayerSymbol);
+        }
+        
+        private void OnStartButtonClick() {
             _gameController.Start();
         }
 
-        private void OnViewClosed(DetachFromPanelEvent evt) {
+        private void OnRestartButtonClick() {
+            _gameController.Restart();
+        }
+        
+        private void OnViewClosed() {
             UnsubscribeFromGameEvents();
-            _view.UnregisterCallback<AttachToPanelEvent>(OnViewOpened);
-            _view.UnregisterCallback<DetachFromPanelEvent>(OnViewClosed);
-            _view.UnregisterCallback<StartButtonClickEvent>(OnStartButtonClick);
-            _view.UnregisterCallback<RestartButtonClicked>(OnRestartButtonClick);
+            _view.Opened -= OnViewOpened;
+            _view.Closed -= OnViewClosed;
+            _view.StartClicked -= OnStartButtonClick;
+            _view.RestartClicked -= OnRestartButtonClick;
+            
             _view.UnregisterCallback<PlayerModeClickedEvent>(OnPlayerModeClicked);
         }
 

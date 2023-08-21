@@ -1,3 +1,4 @@
+using System;
 using TicTacToe.Domain;
 using TicTacToe.Presentation.CustomEvents;
 using TicTacToe.Presentation.VisualElementExtensions;
@@ -12,7 +13,12 @@ namespace TicTacToe.Presentation {
         private readonly PlayerModeElement _playerXMode;
         private readonly PlayerModeElement _playerOMode;
 
-        public GameScreen(VisualElement boardView, StyleSheet gameScreenStyle, StyleSheet playerModeStyle)  {
+        public event Action Opened;
+        public event Action Closed;
+        public event Action StartClicked;
+        public event Action RestartClicked;
+
+        public GameScreen(VisualElement boardView, StyleSheet gameScreenStyle, StyleSheet playerModeStyle) {
             this.SetStyle(gameScreenStyle);
             this.AddToClassList("game-screen");
 
@@ -52,15 +58,18 @@ namespace TicTacToe.Presentation {
             _turnLabel.AddToClassList("turn-label");
             hud.Add(_turnLabel);
 
-            _startButton = new Button(OnStartButtonClick) {
+            _startButton = new Button(() => StartClicked?.Invoke()) {
                 text = "Start"
             };
             _startButton.AddToClassList("button");
 
-            _restartButton = new Button(OnRestartButtonClick) {
+            _restartButton = new Button(() => RestartClicked?.Invoke()) {
                 text = "Restart"
             };
             _restartButton.AddToClassList("button");
+
+            this.RegisterCallback<AttachToPanelEvent>(_ => Opened?.Invoke());
+            this.RegisterCallback<DetachFromPanelEvent>(_ => Closed?.Invoke());
         }
 
         private void OnPlayerXTypeClicked(ClickEvent clickEvent) {
@@ -104,16 +113,6 @@ namespace TicTacToe.Presentation {
             }
 
             _controlPanel.Remove(_restartButton);
-        }
-
-        private void OnStartButtonClick() {
-            var clickEvent = new StartButtonClickEvent(this);
-            this.SendEvent(clickEvent);
-        }
-
-        private void OnRestartButtonClick() {
-            var clickEvent = new RestartButtonClicked(this);
-            this.SendEvent(clickEvent);
         }
     }
 }
