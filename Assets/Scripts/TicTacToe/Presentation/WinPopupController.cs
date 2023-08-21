@@ -1,6 +1,4 @@
 using TicTacToe.Domain;
-using TicTacToe.Presentation.CustomEvents;
-using UnityEngine.UIElements;
 
 namespace TicTacToe.Presentation {
     public class WinPopupController {
@@ -15,24 +13,24 @@ namespace TicTacToe.Presentation {
             _winSymbol = winSymbol;
             _popupManager = popupManager;
 
-            _popup.RegisterCallback<AttachToPanelEvent>(OnViewOpened);
+            _popup.Opened += OnViewOpened;
         }
 
-        private void OnViewOpened(AttachToPanelEvent evt) {
+        private void OnViewOpened() {
             _popup.SetMessage(string.Format(WIN_TEXT_FORMAT, _winSymbol));
 
-            _popup.RegisterCallback<MessageboxCloseButtonClicked>(OnRestartButtonClicked);
-            _popup.RegisterCallback<DetachFromPanelEvent>(OnViewClosed);
+            _popup.OkButtonClicked += OnOkButtonClicked;
+            _popup.Closed += OnViewClosed;
         }
 
-        private void OnRestartButtonClicked(MessageboxCloseButtonClicked evt) {
+        private void OnOkButtonClicked() {
             _popupManager.HidePopupAsync(_popup);
         }
 
-        private void OnViewClosed(DetachFromPanelEvent evt) {
-            _popup.UnregisterCallback<AttachToPanelEvent>(OnViewOpened);
-            _popup.UnregisterCallback<MessageboxCloseButtonClicked>(OnRestartButtonClicked);
-            _popup.UnregisterCallback<DetachFromPanelEvent>(OnViewClosed);
+        private void OnViewClosed() {
+            _popup.Opened -= OnViewClosed;
+            _popup.OkButtonClicked -= OnOkButtonClicked;
+            _popup.Closed -= OnViewClosed;
         }
     }
 }

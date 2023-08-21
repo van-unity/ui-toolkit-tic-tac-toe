@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using TicTacToe.Presentation.CustomEvents;
 using TicTacToe.Presentation.VisualElementExtensions;
@@ -7,10 +8,14 @@ using UnityEngine.UIElements;
 namespace TicTacToe.Presentation {
     public class MessageboxPopup : VisualElement, IPopup {
         private const int ANIMATION_DURATION_MS = 200;
-        
+
         private readonly Label _messageLabel;
         private readonly VisualElement _messagebox;
         private readonly VisualElement _backdrop;
+
+        public event Action Opened;
+        public event Action Closed;
+        public event Action OkButtonClicked;
 
         public MessageboxPopup(StyleSheet style) {
             this.SetStyle(style);
@@ -19,7 +24,6 @@ namespace TicTacToe.Presentation {
             _backdrop = new VisualElement();
             _backdrop.AddToClassList("backdrop");
             _backdrop.AddToClassList("backdrop-hidden");
-            _backdrop.RegisterCallback<ClickEvent>(_ => OnCloseButtonClick());
             _messageLabel = new Label();
             _messageLabel.AddToClassList("message-label");
 
@@ -30,11 +34,10 @@ namespace TicTacToe.Presentation {
 
             this.Add(_backdrop);
             this.Add(_messagebox);
-        }
 
-        private void OnCloseButtonClick() {
-            var clickedEvent = new MessageboxCloseButtonClicked(this);
-            this.SendEvent(clickedEvent);
+            this.RegisterCallback<AttachToPanelEvent>(_ => Opened?.Invoke());
+            this.RegisterCallback<DetachFromPanelEvent>(_ => Closed?.Invoke());
+            _backdrop.RegisterCallback<ClickEvent>(_ => OkButtonClicked?.Invoke());
         }
 
         public void SetMessage(string message) {
