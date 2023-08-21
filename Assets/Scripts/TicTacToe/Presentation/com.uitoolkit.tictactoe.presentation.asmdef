@@ -2,8 +2,8 @@
     "name": "com.uitoolkit.tictactoe.presentation",
     "rootNamespace": "",
     "references": [
-        "GUID:587866de4963540f6aa4e775cb753bde",
         "GUID:810086a3891764aceae853686f5d6817",
+        "GUID:587866de4963540f6aa4e775cb753bde",
         "GUID:d2e20fe97fbf549b1b0bcb69297801b1"
     ],
     "includePlatforms": [],
