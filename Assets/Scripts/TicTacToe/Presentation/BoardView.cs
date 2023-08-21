@@ -1,6 +1,6 @@
+using System;
 using System.Collections.Generic;
 using TicTacToe.Domain;
-using TicTacToe.Presentation.CustomEvents;
 using TicTacToe.Presentation.VisualElementExtensions;
 using TicTacToe.Utils;
 using UnityEngine;
@@ -22,6 +22,10 @@ namespace TicTacToe.Presentation {
         private float _cellHeight;
         private int _symbolSize;
 
+        public event Action<BoardPosition> CellClicked;
+        public event Action Opened;
+        public event Action Closed;
+
         //for this game BoardView should be a square
         //so we could have just one _size field.
         //but we are leaving it this way because maybe we just want to throw some grid for another game or another purpose
@@ -42,13 +46,14 @@ namespace TicTacToe.Presentation {
             this.Add(_gridLinesContainer);
             this.Add(_winningLineContainer);
             this.RegisterCallback<ClickEvent>(OnClick);
+            this.RegisterCallback<AttachToPanelEvent>(_ => { Opened?.Invoke(); });
+            this.RegisterCallback<DetachFromPanelEvent>(_ => { Closed?.Invoke(); });
         }
 
         private void OnClick(ClickEvent clickEvent) {
             clickEvent.PreventDefault();
             var boardPos = PixelToLogicPos(clickEvent.localPosition);
-            var cellClickedEvent = new CellClickedEvent(boardPos, this);
-            this.SendEvent(cellClickedEvent);
+            CellClicked?.Invoke(boardPos);
         }
 
         public void UpdateCell(BoardPosition position, PlayerSymbol playerSymbol) {

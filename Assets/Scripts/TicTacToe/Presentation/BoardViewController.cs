@@ -1,7 +1,6 @@
+using System.Threading.Tasks;
 using TicTacToe.Application;
 using TicTacToe.Domain;
-using TicTacToe.Presentation.CustomEvents;
-using UnityEngine.UIElements;
 
 namespace TicTacToe.Presentation {
     public class BoardViewController {
@@ -19,28 +18,29 @@ namespace TicTacToe.Presentation {
             _gameEvents = gameEvents;
             _viewSettings = viewSettings;
 
-            _view.RegisterCallback<AttachToPanelEvent>(OnViewOpened);
+            _view.Opened += OnViewOpened;
         }
 
-        private void OnViewOpened(AttachToPanelEvent evt) {
+        private void OnViewOpened() {
             _board.CellUpdated += OnCellUpdated;
             _gameEvents.GameWon += OnGameWon;
             _gameEvents.BeforeRestart += OnBeforeRestart;
-            
-            _view.RegisterCallback<CellClickedEvent>(OnCellClicked);
-            _view.RegisterCallback<DetachFromPanelEvent>(OnViewClosed);
-            
-            _view.schedule
-                .Execute(() => { _view.Initialize(); })
-                .ExecuteLater(_viewSettings.BoardDrawDelayMS);
+            _view.CellClicked += OnCellClicked;
+            _view.Closed += OnViewClosed;
+            WaitAndInitializeTheView();
         }
 
+        private async void WaitAndInitializeTheView() {
+            await Task.Delay(_viewSettings.BoardDrawDelayMS);
+            _view?.Initialize();
+        }
+        
         private void OnBeforeRestart() {
             _view.Reset();
         }
 
-        private void OnCellClicked(CellClickedEvent clickEvent) {
-            _inputEventsHandler.HandleCellClick(clickEvent.ClickPosition);
+        private void OnCellClicked(BoardPosition clickPosition) {
+            _inputEventsHandler.HandleCellClick(clickPosition);
         }
 
         private void OnCellUpdated(BoardPosition position, PlayerSymbol playerSymbol) {
@@ -51,13 +51,13 @@ namespace TicTacToe.Presentation {
             _view.DrawWinningLine(win.WinPositions[0], win.WinPositions[^1]);
         }
 
-        private void OnViewClosed(DetachFromPanelEvent evt) {
+        private void OnViewClosed() {
             _board.CellUpdated -= OnCellUpdated;
             _gameEvents.GameWon -= OnGameWon;
             _gameEvents.BeforeRestart -= OnBeforeRestart;
-            _view.UnregisterCallback<DetachFromPanelEvent>(OnViewClosed);
-            _view.UnregisterCallback<AttachToPanelEvent>(OnViewOpened);
-            _view.UnregisterCallback<CellClickedEvent>(OnCellClicked);
+            _view.CellClicked -= OnCellClicked;
+            _view.Opened -= OnViewOpened;
+            _view.Closed -= OnViewClosed;
         }
     }
 }
