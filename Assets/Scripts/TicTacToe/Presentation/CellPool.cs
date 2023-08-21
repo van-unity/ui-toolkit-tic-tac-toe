@@ -21,6 +21,6 @@ namespace TicTacToe.Presentation {
             _pool.Push(cell);
         }
 
-        private Cell CreateNewCell() => new(_styleSettings);
+        private Cell CreateNewCell() => new(_styleSettings.CellStyle);
     }
 }

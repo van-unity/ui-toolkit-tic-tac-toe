@@ -5,8 +5,8 @@ namespace TicTacToe.Presentation {
     public class Cell : VisualElement {
         private readonly Label _symbolLabel;
 
-        public Cell(IStyleSettings styleSettings) {
-            this.SetStyle(styleSettings.CellStyle);
+        public Cell(StyleSheet style) {
+            this.SetStyle(style);
             this.AddToClassList("cell");
 
             _symbolLabel = new Label();

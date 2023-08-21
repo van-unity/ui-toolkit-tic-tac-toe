@@ -25,12 +25,12 @@ namespace TicTacToe.Presentation {
         //for this game BoardView should be a square
         //so we could have just one _size field.
         //but we are leaving it this way because maybe we just want to throw some grid for another game or another purpose
-        public BoardView(int rows, int columns, IStyleSettings styleSettings, CellPool cellPool) {
+        public BoardView(int rows, int columns, StyleSheet style, CellPool cellPool) {
             _rows = rows;
             _columns = columns;
             _cellPool = cellPool;
             _cells = new List<Cell>(rows * columns);
-            this.SetStyle(styleSettings.BoardStyle);
+            this.SetStyle(style);
             this.AddToClassList("board");
             _gridLinesContainer = new VisualElement();
             _gridLinesContainer.AddToClassList("grid-lines-container");

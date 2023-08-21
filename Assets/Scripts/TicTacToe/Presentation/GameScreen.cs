@@ -12,8 +12,8 @@ namespace TicTacToe.Presentation {
         private readonly PlayerModeElement _playerXMode;
         private readonly PlayerModeElement _playerOMode;
 
-        public GameScreen(VisualElement boardView, IStyleSettings styleSettings) {
-            this.SetStyle(styleSettings.GameScreenStyle);
+        public GameScreen(VisualElement boardView, StyleSheet gameScreenStyle, StyleSheet playerModeStyle)  {
+            this.SetStyle(gameScreenStyle);
             this.AddToClassList("game-screen");
 
             var hud = new VisualElement();
@@ -34,10 +34,10 @@ namespace TicTacToe.Presentation {
             var playerModesContainer = new VisualElement();
             playerModesContainer.AddToClassList("player-modes-container");
 
-            _playerXMode = new PlayerModeElement(styleSettings);
+            _playerXMode = new PlayerModeElement(playerModeStyle);
             _playerXMode.SetSymbol(PlayerSymbol.X.ToString());
 
-            _playerOMode = new PlayerModeElement(styleSettings);
+            _playerOMode = new PlayerModeElement(playerModeStyle);
             _playerOMode.SetSymbol(PlayerSymbol.O.ToString());
 
             _playerXMode.RegisterCallback<ClickEvent>(OnPlayerXTypeClicked);

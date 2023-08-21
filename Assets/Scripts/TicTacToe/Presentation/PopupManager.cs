@@ -38,7 +38,7 @@ namespace TicTacToe.Presentation {
 
         private async Task ShowWinPopupAsync(PlayerSymbol winSymbol) {
             _container.visible = true;
-            var popup = new MessageboxPopup(_styleSettings);
+            var popup = new MessageboxPopup(_styleSettings.MessageboxPopupStyle);
             var popupController = new WinPopupController(popup, winSymbol, this);
             _container.Add(popup);
             await popup.ShowAsync();
@@ -46,7 +46,7 @@ namespace TicTacToe.Presentation {
 
         private async Task ShowDrawPopupAsync() {
             _container.visible = true;
-            var popup = new MessageboxPopup(_styleSettings);
+            var popup = new MessageboxPopup(_styleSettings.MessageboxPopupStyle);
             var popupController = new DrawPopupController(popup, this);
             _container.Add(popup);
             await popup.ShowAsync();

@@ -6,8 +6,8 @@ namespace TicTacToe.Presentation {
         private readonly Label _symbolLabel;
         private readonly Label _modeLabel;
 
-        public PlayerModeElement(IStyleSettings styleSettings) {
-            this.SetStyle(styleSettings.PlayerModeStyle);
+        public PlayerModeElement(StyleSheet style) {
+            this.SetStyle(style);
             this.AddToClassList("player-mode-element");
 
             _symbolLabel = new Label();

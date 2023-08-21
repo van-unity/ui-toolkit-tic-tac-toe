@@ -12,8 +12,8 @@ namespace TicTacToe.Presentation {
         private readonly VisualElement _messagebox;
         private readonly VisualElement _backdrop;
 
-        public MessageboxPopup(IStyleSettings styleSettings) {
-            this.SetStyle(styleSettings.MessageboxPopupStyle);
+        public MessageboxPopup(StyleSheet style) {
+            this.SetStyle(style);
             this.AddToClassList("popup");
 
             _backdrop = new VisualElement();

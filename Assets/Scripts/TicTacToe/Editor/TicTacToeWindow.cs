@@ -67,11 +67,11 @@ namespace TicTacToe.Editor {
             this.minSize = new Vector2(_viewSettings.WindowDimensions.x, _viewSettings.WindowDimensions.y);
             this.maxSize = this.minSize;
             var cellPool = new CellPool(_gameSettings.BoardSize * _gameSettings.BoardSize, _styleSettings);
-            var boardView = new BoardView(_gameSettings.BoardSize, _gameSettings.BoardSize, _styleSettings, cellPool);
+            var boardView = new BoardView(_gameSettings.BoardSize, _gameSettings.BoardSize, _styleSettings.BoardStyle, cellPool);
             var boardViewController = new BoardViewController(boardView, _board,
                 _inputManager, _gameController, _viewSettings);
 
-            var gameScreen = new GameScreen(boardView, _styleSettings);
+            var gameScreen = new GameScreen(boardView, _styleSettings.GameScreenStyle, _styleSettings.PlayerModeStyle);
             var gameScreenController = new GameScreenController(gameScreen, _gameController,
                 _gameController, _gameSettings);
 
