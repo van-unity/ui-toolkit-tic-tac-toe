@@ -1,6 +1,5 @@
 using System;
 using TicTacToe.Domain;
-using TicTacToe.Presentation.CustomEvents;
 using TicTacToe.Presentation.VisualElementExtensions;
 using UnityEngine.UIElements;
 
@@ -17,6 +16,7 @@ namespace TicTacToe.Presentation {
         public event Action Closed;
         public event Action StartClicked;
         public event Action RestartClicked;
+        public event Action<PlayerSymbol> PlayerModeClicked;
 
         public GameScreen(VisualElement boardView, StyleSheet gameScreenStyle, StyleSheet playerModeStyle) {
             this.SetStyle(gameScreenStyle);
@@ -46,9 +46,6 @@ namespace TicTacToe.Presentation {
             _playerOMode = new PlayerModeElement(playerModeStyle);
             _playerOMode.SetSymbol(PlayerSymbol.O.ToString());
 
-            _playerXMode.RegisterCallback<ClickEvent>(OnPlayerXTypeClicked);
-            _playerOMode.RegisterCallback<ClickEvent>(OnPlayerOTypeClicked);
-
             playerModesContainer.Add(_playerXMode);
             playerModesContainer.Add(_playerOMode);
             hud.Add(playerModesContainer);
@@ -70,17 +67,8 @@ namespace TicTacToe.Presentation {
 
             this.RegisterCallback<AttachToPanelEvent>(_ => Opened?.Invoke());
             this.RegisterCallback<DetachFromPanelEvent>(_ => Closed?.Invoke());
-        }
-
-        private void OnPlayerXTypeClicked(ClickEvent clickEvent) {
-            clickEvent.PreventDefault();
-            var playerXTypeClickedEvent = new PlayerModeClickedEvent(PlayerSymbol.X, this);
-            this.SendEvent(playerXTypeClickedEvent);
-        }
-
-        private void OnPlayerOTypeClicked(ClickEvent clickEvent) {
-            var playerOTypeClickedEvent = new PlayerModeClickedEvent(PlayerSymbol.O, this);
-            this.SendEvent(playerOTypeClickedEvent);
+            _playerXMode.RegisterCallback<ClickEvent>(_ => PlayerModeClicked?.Invoke(PlayerSymbol.X));
+            _playerOMode.RegisterCallback<ClickEvent>(_ => PlayerModeClicked?.Invoke(PlayerSymbol.O));
         }
 
         public void SetPlayerXMode(string playerXType) {

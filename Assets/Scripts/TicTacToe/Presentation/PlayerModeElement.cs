@@ -18,12 +18,6 @@ namespace TicTacToe.Presentation {
             
             this.Add(_symbolLabel);
             this.Add(_modeLabel);
-            
-            this.RegisterCallback<ClickEvent>(OnClick);
-        }
-
-        private void OnClick(ClickEvent evt) {
-            
         }
 
         public void SetSymbol(string symbol) {

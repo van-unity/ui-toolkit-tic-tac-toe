@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using TicTacToe.Presentation.CustomEvents;
 using TicTacToe.Presentation.VisualElementExtensions;
 using TicTacToe.Utils;
 using UnityEngine.UIElements;

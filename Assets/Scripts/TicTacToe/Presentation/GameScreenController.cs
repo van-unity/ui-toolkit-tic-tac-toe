@@ -1,5 +1,4 @@
 using TicTacToe.Domain;
-using TicTacToe.Presentation.CustomEvents;
 
 namespace TicTacToe.Presentation {
     public class GameScreenController {
@@ -25,9 +24,8 @@ namespace TicTacToe.Presentation {
             _view.Closed += OnViewClosed;
             _view.StartClicked += OnStartButtonClick;
             _view.RestartClicked += OnRestartButtonClick;
-            
-            _view.RegisterCallback<PlayerModeClickedEvent>(OnPlayerModeClicked);
-            
+            _view.PlayerModeClicked += OnPlayerModeClicked;
+
             InitializeTheView();
             SubscribeOnGameEvents();
         }
@@ -59,10 +57,10 @@ namespace TicTacToe.Presentation {
             _view.SetReStartButtonEnabled(true);
         }
 
-        private void OnPlayerModeClicked(PlayerModeClickedEvent evt) {
-            _gameController.TogglePlayerMode(evt.PlayerSymbol);
+        private void OnPlayerModeClicked(PlayerSymbol symbol) {
+            _gameController.TogglePlayerMode(symbol);
         }
-        
+
         private void OnStartButtonClick() {
             _gameController.Start();
         }
@@ -70,15 +68,15 @@ namespace TicTacToe.Presentation {
         private void OnRestartButtonClick() {
             _gameController.Restart();
         }
-        
+
         private void OnViewClosed() {
             UnsubscribeFromGameEvents();
             _view.Opened -= OnViewOpened;
             _view.Closed -= OnViewClosed;
             _view.StartClicked -= OnStartButtonClick;
             _view.RestartClicked -= OnRestartButtonClick;
-            
-            _view.UnregisterCallback<PlayerModeClickedEvent>(OnPlayerModeClicked);
+
+            _view.PlayerModeClicked -= OnPlayerModeClicked;
         }
 
         private void UnsubscribeFromGameEvents() {
